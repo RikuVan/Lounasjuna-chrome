@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  entry: './popup/src/scripts/index.js',
+  entry: './content/src/scripts/index.js',
 
   output: {
     filename: 'content.js',

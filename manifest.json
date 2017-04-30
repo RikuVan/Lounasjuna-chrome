@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Lounasjuna",
   "description": "A chrome extension to see who is going where at https://www.lounaat.info/",
-  "version": "0.0.0.1",
+  "version": "0.0.1",
   "background": {
     "scripts": [
       "event.js"
@@ -17,7 +17,9 @@
     {
       "matches": ["https://www.lounaat.info/*"],
       "css": [],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_end"
     }
-  ]
+  ],
+  "permissions": ["activeTab", "https://www.lounaat.info/*"]
 }
