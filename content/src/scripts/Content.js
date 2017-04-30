@@ -1,10 +1,9 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
-class App extends Component {
+class Content extends Component {
   componentDidMount () {
     document.addEventListener('click', () => {
-      console.log("clicked")
       this.props.dispatch({
         type: 'ADD_COUNT'
       })
@@ -20,6 +19,6 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({count: state.count})
+const mapStateToProps = state => ({count: state.count})
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps)(Content)

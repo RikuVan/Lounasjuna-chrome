@@ -2,8 +2,9 @@ import React from 'react'
 import {render} from 'react-dom'
 import {Store} from 'react-chrome-redux'
 import {Provider} from 'react-redux'
+import '../styles/popup.css'
 
-import App from './App'
+import Popup from './Popup'
 
 const proxyStore = new Store({
   portName: 'lounasjuna'
@@ -11,7 +12,7 @@ const proxyStore = new Store({
 
 render(
   <Provider store={proxyStore}>
-    <App />
+    <Popup />
   </Provider>,
   document.getElementById('app')
 )

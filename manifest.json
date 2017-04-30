@@ -4,9 +4,7 @@
   "description": "A chrome extension to see who is going where at https://www.lounaat.info/",
   "version": "0.0.1",
   "background": {
-    "scripts": [
-      "event.js"
-    ],
+    "scripts": ["background.js", "hot-reload.js"],
     "persistent": true
   },
   "browser_action": {
@@ -21,5 +19,8 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["activeTab", "https://www.lounaat.info/*"]
+  "permissions": [
+    "activeTab",
+    "https://www.lounaat.info/*"
+  ]
 }
