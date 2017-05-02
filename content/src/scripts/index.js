@@ -9,7 +9,7 @@ const proxyStore = new Store({portName: 'lounasjuna'})
 
 render(
   <Provider store={proxyStore}>
-    <Content/>
+    <Content />
   </Provider>,
   document.querySelector('.item-container')
 )

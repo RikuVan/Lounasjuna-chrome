@@ -1,7 +1,10 @@
 .idea
+.DS_Store
 node_modules
 *.log
 secrets.js
 build
-.DS_Store
+dist
 yarn.lock
+.eslintcache
+coverage/

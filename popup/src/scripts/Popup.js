@@ -1,13 +1,31 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 
 class Popover extends Component {
+  componentWillReceiveProps (nextProps) {
+    console.log('receiving props:', nextProps)
+  }
+
+  handleClick = () => this.props.dispatch({type: 'ATTEMPT_SIGN_IN'})
+
   render () {
+    console.log(this.props)
     return (
       <div className='popup-container'>
-        Lounasjuna
+        <header>Lounasjuna</header>
+        <main className='main'>
+          <button
+            className='button button--signin'
+            onClick={this.handleClick}
+          >
+            Sign In
+          </button>
+        </main>
       </div>
     )
   }
 }
 
-export default Popover
+const mapStateToProps = state => ({...state})
+
+export default connect(mapStateToProps)(Popover)

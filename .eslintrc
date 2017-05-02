@@ -3,10 +3,23 @@
   "parser": "babel-eslint",
   "plugins": ["react", "babel", "json"],
   "env": {
-    "browser": true
+    "browser": true,
+    "jest": true
   },
   "rules": {
+    //
+    //Stylistic Issues
+    //
+    // These rules are purely matters of style and are quite subjective.
+    //
     "semi": ["error", "never"],
+    //
+    // ECMAScript 6
+    //
+    // These rules are only relevant to ES6 environments and are off by default.
+    //
+    "generator-star-spacing": [2, "after"], // enforce spacing around the * in generator functions
+    //
     //
     // eslint-plugin-react
     //

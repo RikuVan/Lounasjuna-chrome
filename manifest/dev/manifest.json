@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "name": "Lounasjuna",
+  "description": "A chrome extension to see who is going where at https://www.lounaat.info/",
+  "version": "0.0.3",
+  "background": {
+    "scripts": ["background.js", "babel-polyfill.js", "hot-reload.js"],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_title": "Lounasjuna",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.lounaat.info/*"],
+      "css": [],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "content_security_policy":"script-src 'self' https://*.firebaseio.com https://www.googleapis.com; object-src 'self'",
+  "permissions": [
+    "activeTab",
+    "identity",
+    "https://www.lounaat.info/*"
+  ],
+  "oauth2": {
+    "client_id": "925654909466-ee9q2jdr0d2rdqshph66uhshsql4si3k.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhsaA/qYLNHtuQEKdUXif73b3UGXZTpJCzNOpFR/9u2yiyaYb/tC79nVnSJhdo+VUx5x+S0gCIS8eiqWbiZ/MfI1dxh+J8ZK7mZ2F42W9Qe3uemtkKOmYBvTnhXccQ5a3NqWz4GzMpUcPYgT3XWFzr2gLtIOraecwW8EXUifAZnEN7ePjWyddmV1jj/r2WE7lZLG4P7sRPcnjEMzQ+aYbns+jdihr4G29PF23jkPQxLUBocqqVqOvBqU/IFz+eR1MRv/NBEV2ZIrRbQARoUuzD5hZb+Yz3QSf8VAp5O/7HUg/hzIEK1ou0IGe9g7zHbBpAy9UEbcMYHnR6FX+afpGBwIDAQAB"
+}

@@ -1,6 +1,45 @@
+:root {
+  --lj-blue-color: #304ffe;
+  --lj-bg-color: #f5f5f5;
+}
+
+html {
+  width: 200px;
+  height: 200px;
+}
+
 .popup-container {
-  background-color: red;
-  width: 100px;
-  height: 100px;
-  padding: 1em;
+}
+
+.main {
+  height: 70px;
+  display: flex;
+  padding: 16px;
+  background-color: var(--lj-blue-color);
+  justify-content: space-around;
+  align-items: flex-end;
+}
+
+.button {
+  align-items: flex-start;
+  text-align: center;
+  cursor: pointer;
+  font-family: 'Roboto', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 500;
+  font-size: 12px;
+  border: none;
+  color: #fff;
+  background-color: #2979ff;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.50);
+  border-radius: 2px;
+  padding: 7px 12px 5px 12px;
+}
+
+.button--signin {
+  font-weight: 500;
+  font-size: 16px;
+  padding: 8px 16px 10px 16px;
+  align-self: stretch;
+  margin-left: auto;
 }
