@@ -25,7 +25,6 @@ export const cancelGoogleAuth = () => ({type: CANCEL_AUTH})
 
 // Selectors
 
-export const getUser = pathOr({}, ['auth', 'user'])
 export const isAuthorizingUser = pathOr(false, ['auth', 'loading'])
 export const isLoggedIn = has('uid')
 
@@ -45,29 +44,33 @@ const maybeToken = interactive => {
   })
 }
 
+const removeToken = token => {
+  return new Promise(resolve => {
+    return chrome.identity.removeCachedAuthToken({token}, resolve)
+  })
+}
+
 export function* login (interactive) {
   try {
     const token = yield maybeToken(!!interactive)
     if (chrome.runtime.lastError && !interactive) {
       console.log('It was not possible to get a token programmatically.')
-    } else if(chrome.runtime.lastError) {
+    } else if (chrome.runtime.lastError) {
       console.error("lastError", chrome.runtime.lastError)
     } else if (token) {
-      const credential = yield call(getGoogleCredential, token)
-      const user = yield call(signInWithCredential, credential)
-
-      //FIX WTF?? error cannot read .then of undefined
-      //return signInWithCredential(credential)
+      const credential = yield call(getGoogleCredential, null, token)
+      const {uid, displayName, photoURL, ...rest} = yield call([auth, signInWithCredential], credential)
       // TODO: if the user has never signed in before we need to add them to
       // to list of users in the DB here by checking state for the user
       // and dispatching an action
       //const user = response.user
-      //if (user && !isEmpty(user)) {
-      //  yield put(signIn(getUserData(user)))
+      if (uid) {
+        yield put(signIn({uid, displayName, photoURL}))
       } else {
-      console.error('The OAuth Token was null')
+        console.error('The OAuth Token was null')
       }
-    } catch (error) {
+    }
+  } catch (error) {
     console.log('login error:', error)
   }
 }
@@ -81,9 +84,9 @@ const subscribe = () =>
   eventChannel(emit => auth.onAuthStateChanged(user => emit(user || {})))
 
 function* watchAuthentication () {
-  const channel = yield call(subscribe)
+  //const channel = yield call(subscribe)
   // Keep on taking events from the eventChannel till infinity
-  while (true) {
+  /*while (true) {
     const user = yield take(channel)
     if (user && !isEmpty(user)) {
       try {
@@ -94,7 +97,7 @@ function* watchAuthentication () {
       }
     }
     yield put(signOut())
-  }
+  }*/
 }
 
 export function* doCancelAuth () {

@@ -20,6 +20,7 @@ class Popover extends Component {
           >
             Sign In
           </button>
+          <pre>{JSON.stringify(this.props, null, 2)}</pre>
         </main>
       </div>
     )
