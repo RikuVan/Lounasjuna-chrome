@@ -1,1 +1,42 @@
-{}
+{
+  "users": {
+    "o6w8DCJIcxN3Gz4pjVfvlxSRU38T": {
+      "displayName": "Mikko Matilainen",
+      "photoUrl": "",
+      "currentVote": "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1",
+      "lastVote": "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1"
+    },
+    "obX90qRGN7cU1sRhFHkYRjGsUUm1": {
+      "displayName": "Timur Kärki",
+      "photoUrl": "",
+      "currentVote": "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1",
+      "lastVote": "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1"
+    },
+    "o6w8DCJIcxN3Gz4pjVfvlxSRU3g1": {
+      "displayName": "Richard Van Camp",
+      "photoURL": "https://lh6.googleusercontent.com/-FZjkKmY6ldU/AAAAAAAAAAI/AAAAAAAAA2I/5o5p9u_WQ30/photo.jpg",
+      "currentVote": "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1",
+      "lastVote": "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1"
+    },
+    "obX90qRGN7cU8sRhFHkYRjGsUUh1" : {
+      "displayName" : "Julia Van Camp",
+      "photoURL" : "https://lh4.googleusercontent.com/--jDdjxOF-RU/AAAAAAAAAAI/AAAAAAAAAJ0/u1J9157l2JE/photo.jpg",
+      "currentVote": "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1",
+      "lastVote": "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1"
+    }
+  },
+  "restaurants": {
+    "o6e8DCJIcxN3Gz4pjVfvlxSRU3g1": {
+      "id": "karl-johan",
+      "name": "Karl Johan",
+      "currentVotes": 4,
+      "totalVotes": 12
+    },
+    "obX50qRGN7cU8sRhFHkYRjGsUUh1": {
+      "id": "tamarin-form",
+      "name": "Tamarin Form",
+      "currentVotes": 1,
+      "totalVotes": 4
+    }
+  }
+}

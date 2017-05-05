@@ -14,7 +14,9 @@ class Chooser extends Component {
   render () {
     return (
       <div className='background'>
-        {this.props.name}{': '}{this.props.count}
+        <a href={this.props.path}>
+          {this.props.name}{': '}{this.props.count}
+        </a>
       </div>
     )
   }

@@ -8,7 +8,12 @@ export default firebase
 export const database = firebase.database()
 export const messaging = firebase.messaging()
 export const auth = firebase.auth()
-export const signInWithCredential = auth.signInWithCredential
 export const getGoogleCredential = firebase.auth.GoogleAuthProvider.credential
 
-export const DB = {}
+export const DB = {
+  users: ({userId = ''}) => database.ref(`users${userId ? `/${userId}` : ''}`),
+  history: ({restaurantId = ''}) => database.ref(
+      `history/${restaurantId ? `/${restaurantId}` : ''}`,
+    ),
+}
+

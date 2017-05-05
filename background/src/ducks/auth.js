@@ -99,13 +99,13 @@ export const sagas = [watchLogin(), watchAuthentication(), watchCancel()]
 
 // Reducer
 
-export const initialUserState = {
+export const initialAuthState = {
   loading: false,
   uid: null,
   displayName: null
 }
 
-export default (user = initialUserState, action) => {
+export default (user = initialAuthState, action) => {
   switch (action.type) {
     case actions.ATTEMPT_SIGN_IN:
       return assoc('loading', true, user)

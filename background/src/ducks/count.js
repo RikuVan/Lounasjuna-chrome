@@ -10,7 +10,8 @@ function* incrementAsync () {
 function* watchCount () {
   yield takeEvery('ADD_COUNT', incrementAsync)
 }
-const initialState = 0
+
+export const initialCountState = 0
 
 export default (state = initialState, action) => {
   switch (action.type) {
