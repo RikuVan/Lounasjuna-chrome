@@ -1,12 +1,18 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import {Button} from './components'
+import {
+  getIsSignedIn,
+  isAuthorizingUser
+} from '../../../shared/selectors'
+import actions from '../../../shared/actions'
 
-class Popover extends Component {
-  componentWillReceiveProps (nextProps) {
-    console.log('receiving props:', nextProps)
-  }
+class Popup extends Component {
 
-  handleClick = () => this.props.dispatch({type: 'ATTEMPT_SIGN_IN'})
+  handleClick = () => this.props.signedIn
+    ? this.props.dispatch({type: actions.SIGN_OUT})
+    : this.props.dispatch({type: actions.SIGN_IN})
 
   render () {
     console.log(this.props)
@@ -14,19 +20,26 @@ class Popover extends Component {
       <div className='popup-container'>
         <header>Lounasjuna</header>
         <main className='main'>
-          <button
-            className='button button--signin'
+          <Button
+            type='signin'
             onClick={this.handleClick}
           >
-            Sign In
-          </button>
-          <pre>{JSON.stringify(this.props, null, 2)}</pre>
+            {this.props.signedIn ? 'Sign Out' : 'Sign In'}
+          </Button>
         </main>
       </div>
     )
   }
 }
 
-const mapStateToProps = state => ({...state})
+Popup.propTypes = {
+  signedIn: PropTypes.bool,
+  dispatch: PropTypes.func.isRequired
+}
+//Todo use loading to show spinner when logging in
+const mapStateToProps = state => ({
+  signedIn: getIsSignedIn(state),
+  loading: isAuthorizingUser(state)
+})
 
-export default connect(mapStateToProps)(Popover)
+export default connect(mapStateToProps)(Popup)

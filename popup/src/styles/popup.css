@@ -12,12 +12,12 @@ html {
 }
 
 .main {
-  height: 70px;
+  height: 50px;
   display: flex;
   padding: 16px;
   background-color: var(--lj-blue-color);
   justify-content: space-around;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .button {
@@ -36,10 +36,9 @@ html {
   padding: 7px 12px 5px 12px;
 }
 
-.button--signin {
+.button-signin {
   font-weight: 500;
   font-size: 16px;
-  padding: 8px 16px 10px 16px;
   align-self: stretch;
   margin-left: auto;
 }

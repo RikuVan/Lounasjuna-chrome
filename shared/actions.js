@@ -1,0 +1,7 @@
+export default {
+  //auth
+  ATTEMPT_SIGN_IN: 'ATTEMPT_SIGN_IN',
+  SIGN_IN: 'SIGN_IN',
+  SIGN_OUT: 'SIGN_OUT',
+  CANCEL_AUTH: 'CANCEL_AUTH'
+}

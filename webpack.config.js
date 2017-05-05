@@ -11,17 +11,6 @@ const PRODUCTION = process.env.NODE_ENV === 'production'
 
 const filterFalsy = arr => arr.filter(e => e)
 
-const getDevelopmentFiles = () => {
-  return PRODUCTION
-    ? []
-    : [
-      {
-        from: path.join(ROOT_PATH, 'hot-reload.js'),
-        to: path.join(ROOT_PATH, 'build/hot-reload.js')
-      }
-    ]
-}
-
 const createPlugins = () =>
   filterFalsy([
     PRODUCTION &&
@@ -50,15 +39,14 @@ const createPlugins = () =>
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(
-            ROOT_PATH,
-            PRODUCTION
-              ? 'manifest/prod/manifest.json'
-              : 'manifest/dev/manifest.json'
-          ),
+          from: path.join(ROOT_PATH, 'manifest.json'),
           to: path.join(ROOT_PATH, 'build/manifest.json')
+        },
+        {
+          from: path.join(ROOT_PATH, 'content/src/styles/content.css'),
+          to: path.join(ROOT_PATH, 'build/content.css')
         }
-      ].concat(getDevelopmentFiles())
+      ]
     ),
 
     PRODUCTION && new ExtractTextPlugin('popup.css'),

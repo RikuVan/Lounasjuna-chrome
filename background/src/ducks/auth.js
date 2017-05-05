@@ -1,53 +1,38 @@
 import {eventChannel, takeEvery, channel} from 'redux-saga'
 import {call, put, take} from 'redux-saga/effects'
 import {auth, getGoogleCredential, signInWithCredential} from '../firebase'
-import {pick, isEmpty, pathOr, has, assoc} from 'Ramda'
+import actions from '../../../shared/actions'
+import {assoc} from 'Ramda'
 
-//chrome
+// chrome methods
 
 const getToken = chrome.identity.getAuthToken
+const removeTokenFromCache = chrome.identity.removeCachedAuthToken
 
-// Helpers
+// action creators
 
-const getUserData = pick(['displayName', 'uid'])
-
-// Actions
-
-export const ATTEMPT_SIGN_IN = 'ATTEMPT_SIGN_IN'
-export const SIGN_IN = 'SIGN_IN'
-export const SIGN_OUT = 'SIGN_OUT'
-export const CANCEL_AUTH = 'CANCEL'
-
-export const signIn = user => ({type: SIGN_IN, payload: user})
-export const signOut = () => ({type: SIGN_OUT})
-export const attemptSignIn = () => ({type: ATTEMPT_SIGN_IN})
-export const cancelGoogleAuth = () => ({type: CANCEL_AUTH})
-
-// Selectors
-
-export const isAuthorizingUser = pathOr(false, ['auth', 'loading'])
-export const isLoggedIn = has('uid')
+export const signIn = user => ({type: actions.SIGN_IN, payload: user})
+export const signOut = () => ({type: actions.SIGN_OUT})
+export const attemptSignIn = () => ({type: actions.ATTEMPT_SIGN_IN})
+export const cancelGoogleAuth = () => ({type: actions.CANCEL_AUTH})
 
 // Sagas
 
-const loginChannelWrapper = channel => token => {
-  if(token) {
-    console.log("token", token)
-  } else {
-    console.log("nothing")
-  }
-}
-
+// need to wrap in promise for call
 const maybeToken = interactive => {
   return new Promise(resolve => {
     return getToken({interactive}, resolve)
   })
 }
-
+// TODO: how to get this in a catch with token?
 const removeToken = token => {
   return new Promise(resolve => {
-    return chrome.identity.removeCachedAuthToken({token}, resolve)
+    return removeTokenFromCache({token}, resolve)
   })
+}
+
+export function* authorize (credential) {
+  yield call([auth, signInWithCredential], credential)
 }
 
 export function* login (interactive) {
@@ -59,11 +44,7 @@ export function* login (interactive) {
       console.error("lastError", chrome.runtime.lastError)
     } else if (token) {
       const credential = yield call(getGoogleCredential, null, token)
-      const {uid, displayName, photoURL, ...rest} = yield call([auth, signInWithCredential], credential)
-      // TODO: if the user has never signed in before we need to add them to
-      // to list of users in the DB here by checking state for the user
-      // and dispatching an action
-      //const user = response.user
+      const {uid, displayName, photoURL} = yield call([auth, signInWithCredential], credential)
       if (uid) {
         yield put(signIn({uid, displayName, photoURL}))
       } else {
@@ -72,32 +53,33 @@ export function* login (interactive) {
     }
   } catch (error) {
     console.log('login error:', error)
+    yield put(signIn({error}))
   }
 }
 
 export function* watchLogin () {
   // takeEvery/takeLatest is an alternative to the "while (true)" pattern
-  yield takeEvery(ATTEMPT_SIGN_IN, login, true)
+  yield call(takeEvery, actions.ATTEMPT_SIGN_IN, login, true)
 }
 
 const subscribe = () =>
   eventChannel(emit => auth.onAuthStateChanged(user => emit(user || {})))
 
 function* watchAuthentication () {
-  //const channel = yield call(subscribe)
+  const channel = yield call(subscribe)
   // Keep on taking events from the eventChannel till infinity
-  /*while (true) {
-    const user = yield take(channel)
-    if (user && !isEmpty(user)) {
+  while (true) {
+    const {uid, displayName, photoURL} = yield take(channel)
+    if (uid) {
       try {
-        yield put(signIn(user))
-        return user
+        yield put(signIn({uid, displayName, photoURL}))
+        return
       } catch (error) {
         console.log('auth error:', error)
       }
     }
     yield put(signOut())
-  }*/
+  }
 }
 
 export function* doCancelAuth () {
@@ -110,19 +92,8 @@ export function* doCancelAuth () {
 }
 
 export function* watchCancel () {
-  // takeEvery/takeLatest is an alternative to the "while (true)" pattern
-  yield call(takeEvery, CANCEL_AUTH, doCancelAuth)
+  yield call(takeEvery, actions.CANCEL_AUTH, doCancelAuth)
 }
-
-// Instead of manually calling notify after each SIGN_IN let's just trigger it automatically.
-// With redux-thunk you'd use a custom middleware to dispatch an action following a certain action.
-// function* doShowNotification() {
-//  yield put(notify('LOGGED_IN'))
-// }
-
-// function* showLoginNotification() {
-//  yield takeEvery(SIGN_IN, doShowNotification)
-// }
 
 export const sagas = [watchLogin(), watchAuthentication(), watchCancel()]
 
@@ -136,14 +107,14 @@ export const initialUserState = {
 
 export default (user = initialUserState, action) => {
   switch (action.type) {
-    case ATTEMPT_SIGN_IN:
+    case actions.ATTEMPT_SIGN_IN:
       return assoc('loading', true, user)
-    case SIGN_IN:
+    case actions.SIGN_IN:
       return {
         ...user,
         ...action.payload
       }
-    case SIGN_OUT:
+    case actions.SIGN_OUT:
       return initialUserState
     default:
       return user
