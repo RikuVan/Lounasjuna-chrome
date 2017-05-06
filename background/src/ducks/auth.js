@@ -1,8 +1,10 @@
 import {eventChannel, takeEvery, channel} from 'redux-saga'
-import {call, put, take} from 'redux-saga/effects'
+import {call, put, take, select, fork} from 'redux-saga/effects'
 import {auth, getGoogleCredential, signInWithCredential} from '../firebase'
 import actions from '../../../shared/actions'
-import {assoc} from 'Ramda'
+import {addUser} from './users'
+import {assoc, compose, has, prop} from 'Ramda'
+import {set} from './requests'
 
 // chrome methods
 
@@ -15,6 +17,13 @@ export const signIn = user => ({type: actions.SIGN_IN, payload: user})
 export const signOut = () => ({type: actions.SIGN_OUT})
 export const attemptSignIn = () => ({type: actions.ATTEMPT_SIGN_IN})
 export const cancelGoogleAuth = () => ({type: actions.CANCEL_AUTH})
+
+// selectors
+
+const isAmongUsers = uid => compose(
+  has(uid),
+  prop('auth')
+)
 
 // Sagas
 
@@ -31,22 +40,24 @@ const removeToken = token => {
   })
 }
 
-export function* authorize (credential) {
-  yield call([auth, signInWithCredential], credential)
-}
-
 export function* login (interactive) {
   try {
     const token = yield maybeToken(!!interactive)
+    console.log(token)
     if (chrome.runtime.lastError && !interactive) {
       console.log('It was not possible to get a token programmatically.')
     } else if (chrome.runtime.lastError) {
       console.error("lastError", chrome.runtime.lastError)
     } else if (token) {
       const credential = yield call(getGoogleCredential, null, token)
-      const {uid, displayName, photoURL} = yield call([auth, signInWithCredential], credential)
+      const {uid, displayName, photoURL} = yield call([auth, auth.signInWithCredential], credential)
       if (uid) {
+        const registered = yield select(isAmongUsers(uid))
+        if (!registered) {
+          yield fork(set, 'users', {userId: uid}, {displayName, photoURL})
+        }
         yield put(signIn({uid, displayName, photoURL}))
+
       } else {
         console.error('The OAuth Token was null')
       }
@@ -58,7 +69,6 @@ export function* login (interactive) {
 }
 
 export function* watchLogin () {
-  // takeEvery/takeLatest is an alternative to the "while (true)" pattern
   yield call(takeEvery, actions.ATTEMPT_SIGN_IN, login, true)
 }
 
@@ -70,21 +80,24 @@ function* watchAuthentication () {
   // Keep on taking events from the eventChannel till infinity
   while (true) {
     const {uid, displayName, photoURL} = yield take(channel)
+    console.log("auth channel", uid)
     if (uid) {
       try {
         yield put(signIn({uid, displayName, photoURL}))
-        return
       } catch (error) {
         console.log('auth error:', error)
       }
+    } else {
+      yield put(signOut())
     }
-    yield put(signOut())
   }
 }
 
 export function* doCancelAuth () {
+  console.log("called")
   try {
-    yield call([auth, auth.signOut])
+    const user = yield call([auth, auth.signOut])
+    console.log("HERE", user)
     yield put(signOut())
   } catch (error) {
     console.log('cancel auth error:', error)
@@ -106,6 +119,7 @@ export const initialAuthState = {
 }
 
 export default (user = initialAuthState, action) => {
+  console.log(action)
   switch (action.type) {
     case actions.ATTEMPT_SIGN_IN:
       return assoc('loading', true, user)
@@ -115,7 +129,7 @@ export default (user = initialAuthState, action) => {
         ...action.payload
       }
     case actions.SIGN_OUT:
-      return initialUserState
+      return initialAuthState
     default:
       return user
   }

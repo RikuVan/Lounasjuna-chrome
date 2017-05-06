@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
+import actions from '../../../shared/actions'
+import {getUid} from '../../../shared/selectors'
 
-class Chooser extends Component {
+class Title extends Component {
   componentDidMount () {
     document.getElementById(this.props.id).addEventListener('click', () => {
       this.props.dispatch({
@@ -11,24 +13,30 @@ class Chooser extends Component {
     })
   }
 
+
   render () {
     return (
       <div className='background'>
         <a href={this.props.path}>
-          {this.props.name}{': '}{this.props.count}
+          {this.props.name}
         </a>
+        <div>{this.props.count}</div>
       </div>
     )
   }
 }
 
-Chooser.propTypes = {
+Title.propTypes = {
   count: PropTypes.number,
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired
 }
 
-const mapStateToProps = state => ({count: state.count})
+const mapStateToProps = state => ({
+  users: state.users,
+  userId: getUid(state),
+  count: state.count
+})
 
-export default connect(mapStateToProps)(Chooser)
+export default connect(mapStateToProps)(Title)

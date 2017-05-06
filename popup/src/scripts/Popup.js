@@ -11,8 +11,8 @@ import actions from '../../../shared/actions'
 class Popup extends Component {
 
   handleClick = () => this.props.signedIn
-    ? this.props.dispatch({type: actions.SIGN_OUT})
-    : this.props.dispatch({type: actions.SIGN_IN})
+    ? this.props.dispatch({type: actions.CANCEL_AUTH})
+    : this.props.dispatch({type: actions.ATTEMPT_SIGN_IN})
 
   render () {
     console.log(this.props)

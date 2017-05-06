@@ -4,6 +4,7 @@ import {wrapStore} from 'react-chrome-redux'
 import rootReducer from './ducks'
 import rootSaga from './sagas'
 import {initialState} from  './ducks'
+import actions from '../../shared/actions'
 
 const sagaMiddleware = createSagaMiddleware()
 const middleware = [sagaMiddleware]
@@ -19,3 +20,5 @@ wrapStore(store, {
 })
 
 sagaMiddleware.run(rootSaga)
+
+store.dispatch({type: actions.FETCH_USERS})

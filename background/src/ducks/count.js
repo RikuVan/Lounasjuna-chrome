@@ -13,7 +13,7 @@ function* watchCount () {
 
 export const initialCountState = 0
 
-export default (state = initialState, action) => {
+export default (state = initialCountState, action) => {
   switch (action.type) {
     case 'INCREMENT':
       return state + (action.payload || 1)
