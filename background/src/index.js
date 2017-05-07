@@ -22,3 +22,4 @@ wrapStore(store, {
 sagaMiddleware.run(rootSaga)
 
 store.dispatch({type: actions.FETCH_USERS})
+store.dispatch({type: actions.FETCH_RESTAURANTS})

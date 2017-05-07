@@ -1,18 +1,16 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import actions from '../../../shared/actions'
+import actions, {vote} from '../../../shared/actions'
 import {getUid} from '../../../shared/selectors'
+import {compose, keys, pathOr, propOr, reduce, join} from 'Ramda'
 
 class Title extends Component {
-  componentDidMount () {
-    document.getElementById(this.props.id).addEventListener('click', () => {
-      this.props.dispatch({
-        type: 'ADD_COUNT'
-      })
-    })
-  }
-
+  handleVote = () => this.props.vote({
+    userId: this.props.userId,
+    restaurantId: this.props.id,
+    name: this.props.name}
+  )
 
   render () {
     return (
@@ -20,23 +18,37 @@ class Title extends Component {
         <a href={this.props.path}>
           {this.props.name}
         </a>
-        <div>{this.props.count}</div>
+        <div onClick={this.handleVote}>Vote</div>
+        {this.props.votes.length > 0 &&
+          <small>{join(', ', this.props.votes)}</small>
+        }
       </div>
     )
   }
 }
 
 Title.propTypes = {
-  count: PropTypes.number,
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  vote: PropTypes.func.isRequired
 }
 
-const mapStateToProps = state => ({
-  users: state.users,
+const getVotes = (state, ownProps) => {
+  const currentVoteIds = compose(
+    keys,
+    pathOr({}, ['restaurants', ownProps.id, 'currentVotes'])
+  )(state)
+  const users = propOr({}, 'users', state)
+  return reduce((votes, id) => {
+    const vote = pathOr(null, [id, 'displayName'], users)
+    return votes.concat(vote ? vote : [])
+  }, [], currentVoteIds)
+}
+
+const mapStateToProps = (state, ownProps) => ({
   userId: getUid(state),
-  count: state.count
+  votes: getVotes(state, ownProps)
 })
 
-export default connect(mapStateToProps)(Title)
+export default connect(mapStateToProps, {vote})(Title)

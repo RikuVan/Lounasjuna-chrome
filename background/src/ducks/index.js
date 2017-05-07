@@ -1,16 +1,16 @@
 import {combineReducers} from 'redux'
-import count from './count'
 import auth, {initialAuthState} from './auth'
 import users from './users'
+import restaurants from './restaurants'
 
 export const initialState = {
-  count: 0,
   auth: initialAuthState,
-  users: {}
+  users: {},
+  restaurants: {}
 }
 
 export default combineReducers({
-  count,
   auth,
-  users
+  users,
+  restaurants
 })

@@ -4,7 +4,7 @@ import {auth, getGoogleCredential, signInWithCredential} from '../firebase'
 import actions from '../../../shared/actions'
 import {addUser} from './users'
 import {assoc, compose, has, prop} from 'Ramda'
-import {set} from './requests'
+import {set} from './helpers'
 
 // chrome methods
 
@@ -43,19 +43,23 @@ const removeToken = token => {
 export function* login (interactive) {
   try {
     const token = yield maybeToken(!!interactive)
-    console.log(token)
+
     if (chrome.runtime.lastError && !interactive) {
       console.log('It was not possible to get a token programmatically.')
     } else if (chrome.runtime.lastError) {
       console.error("lastError", chrome.runtime.lastError)
     } else if (token) {
+
       const credential = yield call(getGoogleCredential, null, token)
       const {uid, displayName, photoURL} = yield call([auth, auth.signInWithCredential], credential)
+
       if (uid) {
         const registered = yield select(isAmongUsers(uid))
+
         if (!registered) {
-          yield fork(set, 'users', {userId: uid}, {displayName, photoURL})
+          yield fork(set, 'users', {userId: uid}, {displayName, photoURL, uid})
         }
+
         yield put(signIn({uid, displayName, photoURL}))
 
       } else {
@@ -80,7 +84,7 @@ function* watchAuthentication () {
   // Keep on taking events from the eventChannel till infinity
   while (true) {
     const {uid, displayName, photoURL} = yield take(channel)
-    console.log("auth channel", uid)
+
     if (uid) {
       try {
         yield put(signIn({uid, displayName, photoURL}))
@@ -94,10 +98,9 @@ function* watchAuthentication () {
 }
 
 export function* doCancelAuth () {
-  console.log("called")
   try {
     const user = yield call([auth, auth.signOut])
-    console.log("HERE", user)
+
     yield put(signOut())
   } catch (error) {
     console.log('cancel auth error:', error)
