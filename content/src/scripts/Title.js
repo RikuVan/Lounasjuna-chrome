@@ -2,26 +2,46 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import actions, {vote} from '../../../shared/actions'
+import {Button} from '../../../shared/components'
 import {getUid} from '../../../shared/selectors'
 import {compose, keys, pathOr, propOr, reduce, join} from 'Ramda'
 
 class Title extends Component {
+  state = {showMessage: false}
+
   handleVote = () => this.props.vote({
     userId: this.props.userId,
     restaurantId: this.props.id,
     name: this.props.name}
   )
 
+  suggestLogin = () => this.setState({showMessage: true},
+    () => setTimeout(() => this.setState({showMessage: false}), 1000))
+
   render () {
+    const {userId: loggedIn, votes} = this.props
     return (
-      <div className='background'>
-        <a href={this.props.path}>
-          {this.props.name}
-        </a>
-        <div onClick={this.handleVote}>Vote</div>
-        {this.props.votes.length > 0 &&
-          <small>{join(', ', this.props.votes)}</small>
-        }
+      <div className='title-container'>
+        <div className={loggedIn ? 'lj-title' : ''}>
+          <a href={this.props.path}>
+            {this.props.name}
+          </a>
+        </div>
+        {loggedIn && <Button
+          type='voting'
+          onClick={loggedIn ? this.handleVote : this.suggestLogin}
+        >
+          <span className="button-voting--text">{votes.length}</span>
+        </Button>}
+        <div className="lj-votes">
+          {!loggedIn && this.state.showMessage && <div>Sign in to vote</div>}
+          {loggedIn && votes.length > 0 &&
+            <small className="voter">
+              <span className="logo-train">🚂</span>
+              {' '}{join(', ', votes)}
+            </small>
+          }
+        </div>
       </div>
     )
   }
@@ -30,7 +50,6 @@ class Title extends Component {
 Title.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
   vote: PropTypes.func.isRequired
 }
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {Button} from './components'
+import {Button} from '../../../shared/components'
 import {
   getIsSignedIn,
   isAuthorizingUser
@@ -15,16 +15,28 @@ class Popup extends Component {
     : this.props.dispatch({type: actions.ATTEMPT_SIGN_IN})
 
   render () {
-    console.log(this.props)
+    const {signedIn, loading} = this.props;
     return (
       <div className='popup-container'>
-        <header>Lounasjuna</header>
+        <header>
+          <h2>
+            Lounasjuna
+          </h2>
+        </header>
         <main className='main'>
           <Button
             type='signin'
             onClick={this.handleClick}
+            loading={loading}
           >
-            {this.props.signedIn ? 'Sign Out' : 'Sign In'}
+            {signedIn ? 'Sign out' : 'Sign in with Google'}
+          </Button>
+          <Button
+            type='stats'
+            onClick={this.handleClick}
+            disabled={signedIn}
+          >
+            Check the stats
           </Button>
         </main>
       </div>
@@ -33,10 +45,9 @@ class Popup extends Component {
 }
 
 Popup.propTypes = {
-  signedIn: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired
+  signedIn: PropTypes.bool.isRequired
 }
-//Todo use loading to show spinner when logging in
+
 const mapStateToProps = state => ({
   signedIn: getIsSignedIn(state),
   loading: isAuthorizingUser(state)

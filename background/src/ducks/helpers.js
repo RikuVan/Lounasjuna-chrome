@@ -1,6 +1,7 @@
 import {DB} from '../firebase'
 import {eventChannel} from 'redux-saga'
 import {call, put, fork, take} from 'redux-saga/effects'
+import {is} from 'Ramda'
 
 export const CHILD_ADDED = 'child_added'
 export const CHILD_REMOVED = 'child_removed'
@@ -26,6 +27,7 @@ const newOpts = (name = 'data') => {
 export function* get(path, params, action) {
   const ref = DB[path](params);
   const data = yield call([ref, ref.once], 'value')
+
   yield put(action(data.val()))
 }
 
@@ -38,12 +40,14 @@ export function* set(path, params, payload, actionCreator) {
     take(opts)
   ];
 
-  yield put(actionCreator())
+  if (is(Function, actionCreator)) {
+    yield put(actionCreator())
+  }
 
   return error
 }
 
-export function* update(path, params, payload, actionCreator = () => {}) {
+export function* update(path, params, payload, actionCreator) {
   const opts = newOpts('error')
   const ref = DB[path](params)
 
@@ -52,9 +56,22 @@ export function* update(path, params, payload, actionCreator = () => {}) {
     take(opts)
   ];
 
-  yield put(actionCreator())
+  if (is(Function, actionCreator)) {
+    yield put(actionCreator())
+  }
 
   return error
+}
+
+export function* remove(path, params) {
+  const opts = newOpts('error')
+  const ref = DB[path](params)
+
+  const [ _, { error } ] = yield [
+    call([ref, ref.remove], opts.handler),
+    take(opts)
+  ];
+  return error;
 }
 
 function* runSync(ref, eventType, actionCreator) {
@@ -63,13 +80,17 @@ function* runSync(ref, eventType, actionCreator) {
 
   while (true) {
     const {data} = yield take(opts)
-    yield put(actionCreator({...data.val()}))
+    yield put(actionCreator(data.val()))
   }
 }
 
+const getTimeNow = () => Math.round((new Date()).getTime() / 1000)
+
 export function* sync(path, mapEventToAction = {}, limit) {
-  const ref = typeof limit === 'number' ?
-    DB[path]({}).limitToLast(limit) : DB[path]({})
+  //TODO: filter on ts to not load old items
+  const ref = typeof limit === 'number'
+    ? DB[path]({}).limitToLast(limit)
+    : DB[path]({})
 
   for (let type of EVENT_TYPES) {
     const action = mapEventToAction[type]

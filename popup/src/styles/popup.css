@@ -1,44 +1,64 @@
 :root {
-  --lj-blue-color: #304ffe;
-  --lj-bg-color: #f5f5f5;
+  --lj-background: #f5f5f5;
+  --lj-background-blue: #304ffe;
+  --lj-button-blue: hsl(218, 100%, 58%);
 }
 
 html {
-  width: 200px;
-  height: 200px;
+  min-width: 200px;
+  background-color: var(--lj-background-blue);
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Oleo Script', Arial, sans-serif;
+  margin: 0;
 }
 
 .popup-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+header {
+  width: 100%;
+  text-align: center;
+  color: var(--lj-background);
 }
 
 .main {
-  height: 50px;
   display: flex;
+  flex-direction: column;
   padding: 16px;
-  background-color: var(--lj-blue-color);
+  width: 100%;
+  background-color: var(--lj-background-blue);
   justify-content: space-around;
   align-items: center;
 }
 
-.button {
+.lj-button {
   align-items: flex-start;
+  width: 100%;
   text-align: center;
   cursor: pointer;
-  font-family: 'Roboto', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+  font-family: 'Lato', Arial, sans-serif;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 16px;
   border: none;
   color: #fff;
-  background-color: #2979ff;
+  background-color: var(--lj-button-blue);
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.50);
   border-radius: 2px;
   padding: 7px 12px 5px 12px;
+  align-self: stretch;
+  margin-left: auto;
+}
+
+.button-icon {
+  margin-right: 20px;
 }
 
 .button-signin {
-  font-weight: 500;
-  font-size: 16px;
-  align-self: stretch;
-  margin-left: auto;
+  margin-bottom: 10px;
 }

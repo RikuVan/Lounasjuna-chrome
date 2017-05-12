@@ -1,6 +1,6 @@
 import {eventChannel, takeEvery, channel} from 'redux-saga'
 import {call, put, take, select, fork} from 'redux-saga/effects'
-import {auth, getGoogleCredential, signInWithCredential} from '../firebase'
+import {auth, getGoogleCredential, signInWithCredential, SERVER_TIMESTAMP} from '../firebase'
 import actions from '../../../shared/actions'
 import {addUser} from './users'
 import {assoc, compose, has, prop} from 'Ramda'
@@ -57,7 +57,12 @@ export function* login (interactive) {
         const registered = yield select(isAmongUsers(uid))
 
         if (!registered) {
-          yield fork(set, 'users', {userId: uid}, {displayName, photoURL, uid})
+          yield fork(
+            set,
+            'users',
+            {userId: uid},
+            {displayName, photoURL, uid, insertedAt: SERVER_TIMESTAMP}
+          )
         }
 
         yield put(signIn({uid, displayName, photoURL}))
@@ -129,7 +134,8 @@ export default (user = initialAuthState, action) => {
     case actions.SIGN_IN:
       return {
         ...user,
-        ...action.payload
+        ...action.payload,
+        loading: false
       }
     case actions.SIGN_OUT:
       return initialAuthState

@@ -1,37 +1,233 @@
 {
-  "users": {
-    "o6w8DCJIcxN3Gz4pjVfvlxSRU38T": {
-      "displayName": "Mikko Matilainen",
-      "photoUrl": ""
+  "restaurants" : {
+    "bbq-house" : {
+      "id" : "bbq-house",
+      "insertedAt" : 1494177145034,
+      "name" : "BBQ House",
+      "votes" : {}
     },
-    "obX90qRGN7cU1sRhFHkYRjGsUUm1": {
-      "displayName": "Timur Kärki",
-      "photoUrl": ""
+    "beef-&-grill" : {
+      "currentVotes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      },
+      "id" : "beef-&-grill",
+      "insertedAt" : 1494340052025,
+      "name" : "Beef & Grill",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
     },
-    "o6w8DCJIcxN3Gz4pjVfvlxSRU3g1": {
-      "displayName": "Richard Van Camp",
-      "photoURL": "https://lh6.googleusercontent.com/-FZjkKmY6ldU/AAAAAAAAAAI/AAAAAAAAA2I/5o5p9u_WQ30/photo.jpg"
+    "bryggeri" : {
+      "id" : "bryggeri",
+      "insertedAt" : 1494179590017,
+      "name" : "Bryggeri",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "casa-largo" : {
+      "id" : "casa-largo",
+      "insertedAt" : 1494182939358,
+      "name" : "Casa Largo",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "factory-aleksi" : {
+      "id" : "factory-aleksi",
+      "insertedAt" : 1494177147192,
+      "name" : "Factory Aleksi",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "fig" : {
+      "id" : "fig",
+      "insertedAt" : 1494172206524,
+      "name" : "Fig",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "fisken-pa-disken" : {
+      "id" : "fisken-pa-disken",
+      "insertedAt" : 1494182863204,
+      "name" : "Fisken på Disken",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "iguana-mannerheimintie" : {
+      "id" : "iguana-mannerheimintie",
+      "insertedAt" : 1494341160421,
+      "name" : "Iguana Mannerheimintie",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "kaarna" : {
+      "id" : "kaarna",
+      "insertedAt" : 1494178355742,
+      "name" : "Kaarna",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "kampin-huippu" : {
+      "id" : "kampin-huippu",
+      "insertedAt" : 1494182638153,
+      "name" : "Kampin Huippu",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "karl-johan" : {
+      "currentVotes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342709739
+      },
+      "id" : "karl-johan",
+      "insertedAt" : 1494341150293,
+      "name" : "Karl Johan",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342709739
+      }
+    },
+    "kiasma_cafe" : {
+      "id" : "kiasma_cafe",
+      "insertedAt" : 1494177172639,
+      "name" : "Kiasma_Café",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "kiila" : {
+      "id" : "kiila",
+      "insertedAt" : 1494341144524,
+      "name" : "Kiila",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "la-torrefazione" : {
+      "insertedAt" : 1494174430471,
+      "name" : "La Torrefazione",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "leonardo-bar-&-ristorante" : {
+      "id" : "leonardo-bar-&-ristorante",
+      "insertedAt" : 1494179472490,
+      "name" : "Leonardo Bar & Ristorante",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "memphis-kamppi" : {
+      "id" : "memphis-kamppi",
+      "insertedAt" : 1494179504779,
+      "name" : "Memphis Kamppi",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "morrisons-grill-&-green" : {
+      "id" : "morrisons-grill-&-green",
+      "insertedAt" : 1494183006155,
+      "name" : "Morrison's Grill & Green",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "morrisons-pizzeria-&-spagetteria" : {
+      "id" : "morrisons-pizzeria-&-spagetteria",
+      "insertedAt" : 1494184019380,
+      "name" : "Morrison's Pizzeria & Spagetteria",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "olearys-bakers" : {
+      "id" : "olearys-bakers",
+      "insertedAt" : 1494338334053,
+      "name" : "O'Learys Bakers",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "osakuntabaari" : {
+      "id" : "osakuntabaari",
+      "insertedAt" : 1494182830274,
+      "name" : "Osakuntabaari",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "paaposti" : {
+      "id" : "paaposti",
+      "insertedAt" : 1494183579382,
+      "name" : "Pääposti",
+      "votes" : {
+        "Rj7dq9EZm0VHjko6zFRexwFhxI12" : 1494342197436
+      }
+    },
+    "ravintola-ahti" : {
+      "id" : "ravintola-ahti",
+      "insertedAt" : 1494183783591,
+      "name" : "Ravintola Ahti",
+      "votes" : {}
+    },
+    "ravintola-brod" : {
+      "id" : "ravintola-brod",
+      "insertedAt" : 1494183825837,
+      "name" : "Ravintola Bröd",
+      "votes" : {}
+    },
+    "ravintola-lonkka" : {
+      "id" : "ravintola-lonkka",
+      "insertedAt" : 1494340141225,
+      "name" : "Ravintola Lönkka",
+      "votes" : {}
+    },
+    "ravintola-tornado" : {
+      "id" : "ravintola-tornado",
+      "insertedAt" : 1494183451938,
+      "name" : "Ravintola Tornado",
+      "votes" : {}
+    },
+    "tamarin-forum" : {
+      "id" : "tamarin-forum",
+      "insertedAt" : 1494341148418,
+      "name" : "Tamarin Forum",
+      "votes" : {}
+    },
+    "virgin-oil-co" : {
+      "id" : "virgin-oil-co",
+      "insertedAt" : 1494341154350,
+      "name" : "Virgin Oil Co",
+      "votes" : {}
+    }
+  },
+  "users" : {
+    "Rj7dq9EZm0VHjko6zFRexwFhxI12" : {
+      "displayName" : "Richard Van Camp",
+      "insertedAt" : 1494339638698,
+      "photoURL" : "https://lh6.googleusercontent.com/-FZjkKmY6ldU/AAAAAAAAAAI/AAAAAAAAA2I/5o5p9u_WQ30/photo.jpg",
+      "uid" : "Rj7dq9EZm0VHjko6zFRexwFhxI12"
+    },
+    "o6w8DCJIcxN3Gz4pjVfvlxSRU38T" : {
+      "displayName" : "Mikko Matilainen",
+      "insertedAt" : 1494169177730,
+      "photoUrl" : ""
+    },
+    "obX90qRGN7cU1sRhFHkYRjGsUUm1" : {
+      "displayName" : "Timur Kärki",
+      "photoUrl" : ""
     },
     "obX90qRGN7cU8sRhFHkYRjGsUUh1" : {
       "displayName" : "Julia Van Camp",
+      "insertedAt" : 1494169177730,
       "photoURL" : "https://lh4.googleusercontent.com/--jDdjxOF-RU/AAAAAAAAAAI/AAAAAAAAAJ0/u1J9157l2JE/photo.jpg"
-    }
-  },
-  "restaurants": {
-    "karl-johan": {
-      "name": "Karl Johan",
-      "currentVotes": {
-        "o6w8DCJIcxN3Gz4pjVfvlxSRU3g1": true
-      },
-      "totalVotes": 12
-    },
-    "tamarin-form": {
-      "name": "Tamarin Form",
-      "currentVotes": {
-        "o6w8DCJIcxN3Gz4pjVfvlxSRU38T": true,
-        "obX90qRGN7cU1sRhFHkYRjGsUUm1": true
-      },
-      "totalVotes": 4
     }
   }
 }

@@ -2,12 +2,21 @@ import React from 'react'
 import {render, unmountComponentAtNode} from 'react-dom'
 import {Provider} from 'react-redux'
 import {Store} from 'react-chrome-redux'
+import {replace, toLower, compose} from 'Ramda'
 
 import Title from './Title'
 
 const proxyStore = new Store({portName: 'lounasjuna'})
 
-const createId = item => item.replace(/\s+/g, '-').toLowerCase()
+const createId = compose(
+  replace(/[^0-9a-z&-]/gi, ''),
+  replace(/é/gi, 'e'),
+  replace(/å/, 'a'),
+  replace(/ö/gi, 'o'),
+  replace(/ä/gi, 'a'),
+  replace(/\s+|_/g, '-'),
+  toLower
+)
 
 /**
  * replaces h3 title for restaurant card with react version

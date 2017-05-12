@@ -6,7 +6,7 @@ import {get, sync, CHILD_ADDED, CHILD_REMOVED} from './helpers'
 
 // action creators
 
-const fetchUsers = () => ({type: actions.FETCH_USERS})
+export const fetchUsers = () => ({type: actions.FETCH_USERS})
 const setUsers = users => ({type: actions.SET_USERS, payload: {users}})
 const addUser = user => ({type: actions.ADD_USER, payload: {user}})
 const removeUser = ({uid}) => ({type: actions.REMOVE_USER, payload: {uid}})

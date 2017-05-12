@@ -6,6 +6,7 @@ firebase.initializeApp(config.firebase)
 export default firebase
 
 export const database = firebase.database()
+export const SERVER_TIMESTAMP = firebase.database.ServerValue.TIMESTAMP
 export const messaging = firebase.messaging()
 export const auth = firebase.auth()
 export const getGoogleCredential = firebase.auth.GoogleAuthProvider.credential

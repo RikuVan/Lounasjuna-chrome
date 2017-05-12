@@ -1,7 +1,59 @@
-.wrap {
-  background: url('https://media.giphy.com/media/3o7WTDJQVuYwhhuLhC/giphy.gif') !important;
+/**
+  Root
+ */
+
+:root {
+  --lj-background: 	hsl(0, 0%, 96%);
+  --lj-background-blue: hsl(231, 99%, 59%);
+  --lj-button-blue: hsl(218, 100%, 58%);
 }
 
-.background {
-  background-color: red;
+/**
+  Lounaat.info overrides
+ */
+
+.menu.item.isotope-item {
+  margin-top: 2em;
+}
+
+/**
+  Title component styles
+ */
+
+.lj-title {
+  display: inline-block;
+  margin-left: 25px;
+  z-index: 10000;
+}
+
+.lj-button {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  margin: -15px -20px;
+  width: 36px;
+  height: 46px;
+  border-radius: 50%;
+  border: 0;
+  outline: 0;
+  background: var(--lj-button-blue);
+  font-size: 16px;
+  color: white;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  transition: all .3s;
+}
+
+.button-voting--text {
+  position: absolute;
+  bottom: 3px;
+  right: 12px;
+}
+
+.lj-votes > .voter {
+  color: black;
+  font-style: italic;
+}
+
+.voter > .logo-train {
+  font-size: 20px;
 }

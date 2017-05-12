@@ -20,9 +20,9 @@ const actions = {
   FETCH_RESTAURANTS: 'FETCH_RESTAURANTS',
   SET_RESTAURANTS: 'SET_RESTAURANTS',
   VOTE: 'VOTE',
-  REVOKE_VOTE: 'REVOKE_VOTE',
-  ADD_VOTE: 'ADD_VOTE',
-  REMOVE_VOTE: 'REMOVE_VOTE'
+  REVOKE_VOTES: 'REVOKE_VOTES',
+  UPDATE_RESTAURANT: 'UPDATE_RESTAURANT',
+  REMOVE_RESTAURANT: 'REMOVE_RESTAURANT'
 }
 
 export default actions
@@ -31,5 +31,4 @@ export default actions
  * ACTION CREATORS
  */
 
-export const vote = payload =>
-  ({type: actions.VOTE, payload: {...payload}})
+export const vote = payload => ({type: actions.VOTE, payload})
