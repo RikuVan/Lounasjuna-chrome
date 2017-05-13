@@ -8,13 +8,6 @@
   --lj-button-blue: hsl(218, 100%, 58%);
 }
 
-/**
-  Lounaat.info overrides
- */
-
-.menu.item.isotope-item {
-  margin-top: 2em;
-}
 
 /**
   Title component styles
@@ -50,7 +43,7 @@
 }
 
 .lj-votes > .voter {
-  color: black;
+  color: #333;
   font-style: italic;
 }
 

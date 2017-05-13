@@ -1,8 +1,62 @@
-var functions = require('firebase-functions');
+const functions = require('firebase-functions')
+const admin = require('firebase-admin')
+const secureCompare = require('secure-compare')
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+admin.initializeApp(functions.config().firebase)
+const DB = admin.database()
+
+exports.cleanupUserData = functions.auth.user().onDelete(event => {
+  const uid = event.data.uid;
+  return admin.database().ref(`/users/${uid}`).remove()
+})
+
+/**
+ * Nightly http request from https://cron-job.org at 22.00 to trigger vote cleanup
+ */
+
+exports.dbcleanup = functions.https.onRequest((req, res) => {
+  const key = req.query.key
+
+  // Exit if the keys don't match
+  if (!secureCompare(key, functions.config().cron.key)) {
+    console.log('The key provided in the request does not match the key set in the environment. Check that', key,
+      'matches the cron.key attribute in `firebase env:get`')
+    res.status(403).send('Security key does not match. Make sure your "key" URL query parameter matches the ' +
+      'cron.key environment variable.')
+    return;
+  }
+
+  const restaurants = DB.ref('/restaurants/')
+  const history = DB.ref('/history/')
+
+  restaurants.once('value').then(snapshot => {
+    const data = snapshot.val()
+    //batch removal of current votes, moving them to previous votes
+    return Object.keys(data).reduce((updates, key) => {
+      const current = data[key]
+      if (current.currentVotes) {
+        updates[`${current.id}/currentVotes`] = null
+        Object.keys(current.currentVotes).forEach(key => {
+          updates[`${current.id}/previousVotes/${key}-${current.currentVotes[key]}`] = current.currentVotes[key]
+        })
+      }
+      return updates
+    }, {})
+
+  }).then(updates => {
+    if (Object.keys(updates).length > 0) {
+      return restaurants.update(updates)
+        .then(() => {
+          console.log("These votes for today have been cleaned up: ", updates)
+          res.send('Vote cleanup successful')
+        })
+        .catch(() => {
+          console.log("An error occurred cleaning up today's votes: ", updates)
+          res.error('Vote cleanup failed')
+        })
+    }
+    console.log('No votes to cleanup')
+    return res.send('No votes to cleanup')
+  })
+})
+

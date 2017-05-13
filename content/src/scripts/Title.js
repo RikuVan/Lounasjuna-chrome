@@ -19,13 +19,11 @@ class Title extends Component {
     () => setTimeout(() => this.setState({showMessage: false}), 1000))
 
   render () {
-    const {userId: loggedIn, votes} = this.props
+    const {userId: loggedIn, votes, path, name} = this.props
     return (
       <div className='title-container'>
         <div className={loggedIn ? 'lj-title' : ''}>
-          <a href={this.props.path}>
-            {this.props.name}
-          </a>
+          <a href={path}>{name}</a>
         </div>
         {loggedIn && <Button
           type='voting'
