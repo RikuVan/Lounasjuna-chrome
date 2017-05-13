@@ -1,16 +1,24 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const secureCompare = require('secure-compare')
-
+const rp = require('request-promise')
 admin.initializeApp(functions.config().firebase)
+
 const DB = admin.database()
+const config = functions.config()
+const auth = admin.auth()
+
+/**
+ * USERS CLEANUP ON AUTH DELETE
+ */
 
 exports.cleanupUserData = functions.auth.user().onDelete(event => {
   const uid = event.data.uid;
-  return admin.database().ref(`/users/${uid}`).remove()
+  return DB.ref(`/users/${uid}`).remove()
 })
 
 /**
+ * DB CRON CLEANUP
  * Nightly http request from https://cron-job.org at 22.00 to trigger vote cleanup
  */
 
@@ -59,4 +67,56 @@ exports.dbcleanup = functions.https.onRequest((req, res) => {
     return res.send('No votes to cleanup')
   })
 })
+
+/**
+ *  SLACK NOTIFICATIONS
+ *  on new vote, send slack notification with user name and restaurant
+ */
+
+exports.slackVoteNotification = functions.database.ref('/restaurants/{restaurantId}/currentVotes/{userId}')
+  .onWrite(event => {
+
+    const userId = event.params.userId
+    const restaurantId = event.params.restaurantId
+    const getAuthor = auth.getUser(userId)
+
+    const getRestaurant = DB.ref(`restaurants/${restaurantId}`)
+      .once('value')
+      .then(snapshot => snapshot.val())
+
+    return Promise.all([getAuthor, getRestaurant])
+      .then(([author, restaurant]) => {
+        //we will only send a message if it was a new, not deletion of the old
+        const wasDeletion = !restaurant.currentVotes || !restaurant.currentVotes[userId]
+
+        const payload = {
+          notification: {
+            title: `${author.displayName} on valinnut uuden junan!`,
+            body: restaurant.name.toUpperCase(),
+            icon: author.photoURL
+          }
+        }
+
+        if (!wasDeletion) {
+          postToSlack(author, restaurant).then(res => {
+            res.end()
+          }).catch(console.error)
+        }
+      })
+  })
+
+
+function postToSlack(author, restaurant) {
+
+  const lounasUrl = 'https://www.lounaat.info/'
+
+  return rp({
+    method: 'POST',
+    uri: config.webhooks.slack,
+    body: {
+      text: `${author.displayName} on valinnut: ${restaurant.name}\n<${lounasUrl}|Millä lounasjunalla sinä menet?>`
+    },
+    json: true
+  });
+}
 
