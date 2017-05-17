@@ -1,29 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Loading from './Loading'
+import setClasses from 'classnames'
 
-const Button = (
-  {
-    children,
-    className,
-    htmlType,
-    onClick,
-    type,
-    loading,
-    icon,
-    disabled,
-    ...rest
-  },
-) => (
+const Button = ({
+  children,
+  className,
+  htmlType,
+  onClick,
+  type,
+  loading,
+  icon,
+  disabled,
+  active,
+  ...rest
+}) => (
   <button
-    className={
-      `lj-button ${type ? 'button-' + type : ''} ${disabled ? 'disabled' : ''}`
-    }
+    className={setClasses(`lj-button ${type ? 'button-' + type : ''}`, {
+      disabled,
+      active
+    })}
     onClick={!disabled && onClick}
     type={htmlType}
     {...rest}
   >
-    {icon && <i className={`button-icon fa fa-${icon}`}/>}
+    {icon && <i className={`button-icon fa fa-${icon}`} />}
     {loading ? <Loading small={true} /> : children}
   </button>
 )

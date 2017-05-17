@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const Loading = ({small}) => {
   return (
@@ -7,7 +8,7 @@ const Loading = ({small}) => {
 }
 
 Loading.propTypes = {
-  small: PropTypes.bool,
+  small: PropTypes.bool
 }
 
 export default Loading

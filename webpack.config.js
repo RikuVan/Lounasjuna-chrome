@@ -36,18 +36,20 @@ const createPlugins = () =>
       chunks: ['popup']
     }),
 
-    new CopyWebpackPlugin(
-      [
-        {
-          from: path.join(ROOT_PATH, 'manifest.json'),
-          to: path.join(ROOT_PATH, 'build/manifest.json')
-        },
-        {
-          from: path.join(ROOT_PATH, 'content/src/styles/content.css'),
-          to: path.join(ROOT_PATH, 'build/content.css')
-        }
-      ]
-    ),
+    new CopyWebpackPlugin([
+      {
+        from: path.join(ROOT_PATH, 'manifest.json'),
+        to: path.join(ROOT_PATH, 'build/manifest.json')
+      },
+      {
+        from: path.join(ROOT_PATH, 'content/src/styles/content.css'),
+        to: path.join(ROOT_PATH, 'build/content.css')
+      },
+      {
+        from: path.join(ROOT_PATH, 'popup/icons/lounasjuna_32.png'),
+        to: path.join(ROOT_PATH, 'build/lounasjuna_32.png')
+      }
+    ]),
 
     PRODUCTION && new ExtractTextPlugin('popup.css'),
 

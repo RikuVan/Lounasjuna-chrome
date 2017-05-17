@@ -1,5 +1,5 @@
 import {takeLatest} from 'redux-saga'
-import {call, put, fork} from 'redux-saga/effects'
+import {call, fork} from 'redux-saga/effects'
 import actions from '../../../shared/actions'
 import {assoc, dissoc} from 'Ramda'
 import {get, sync, CHILD_ADDED, CHILD_REMOVED} from './helpers'
@@ -13,11 +13,11 @@ const removeUser = ({uid}) => ({type: actions.REMOVE_USER, payload: {uid}})
 
 // sagas
 
-function* syncUsers() {
+function* syncUsers () {
   yield fork(sync, 'users', {
     [CHILD_ADDED]: addUser,
     [CHILD_REMOVED]: removeUser
- })
+  })
 }
 
 export function* watchUsers () {
@@ -38,7 +38,7 @@ export default (users = {}, action) => {
     case actions.ADD_USER:
       return assoc([action.payload.user.uid], action.payload.user, users)
     case actions.REMOVE_USER:
-      return dissoc([payload.user.uid], users)
+      return dissoc([action.payload.user.uid], users)
     default:
       return users
   }

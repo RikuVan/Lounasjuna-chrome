@@ -6,6 +6,9 @@
     "browser": true,
     "jest": true
   },
+  "globals": {
+    "chrome": true
+  },
   "rules": {
     //
     //Stylistic Issues

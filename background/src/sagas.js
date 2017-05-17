@@ -3,9 +3,5 @@ import {sagas as users} from './ducks/users'
 import {sagas as restaurants} from './ducks/restaurants'
 
 export default function* rootSaga () {
-  yield [
-    auth,
-    users,
-    restaurants
-  ]
+  yield [auth, users, restaurants]
 }

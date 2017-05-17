@@ -31,4 +31,13 @@ export default actions
  * ACTION CREATORS
  */
 
+// restaurants
 export const vote = payload => ({type: actions.VOTE, payload})
+export const revokeVotes = userId => ({
+  type: actions.REVOKE_VOTES,
+  payload: {userId}
+})
+// auth
+export const attemptSignIn = () => ({type: actions.ATTEMPT_SIGN_IN})
+export const cancelGoogleAuth = () => ({type: actions.CANCEL_AUTH})
+

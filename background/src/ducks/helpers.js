@@ -9,36 +9,44 @@ export const CHILD_CHANGED = 'child_changed'
 export const CHILD_MOVED = 'child_moved'
 export const VALUE = 'value'
 
-const EVENT_TYPES = [CHILD_ADDED, CHILD_REMOVED, CHILD_CHANGED, CHILD_MOVED, VALUE]
+const EVENT_TYPES = [
+  CHILD_ADDED,
+  CHILD_REMOVED,
+  CHILD_CHANGED,
+  CHILD_MOVED,
+  VALUE
+]
 
 const newOpts = (name = 'data') => {
-  const opts = {};
+  const opts = {}
   const chan = eventChannel(emit => {
     opts.handler = obj => {
-      emit({ [name]: obj })
-    };
+      emit({[name]: obj})
+    }
     return () => {}
-  });
+  })
 
   chan.handler = opts.handler
   return chan
-};
+}
 
-export function* get(path, params, action) {
-  const ref = DB[path](params);
+export function* get (path, params, action) {
+  const ref = DB[path](params)
   const data = yield call([ref, ref.once], 'value')
 
   yield put(action(data.val()))
 }
 
-export function* set(path, params, payload, actionCreator) {
+/* eslint-disable no-unused-vars */
+
+export function* set (path, params, payload, actionCreator) {
   const ref = DB[path](params)
   const opts = newOpts('data')
 
   const [_, {error}] = yield [
     call([ref, ref.set], payload, opts.handler),
     take(opts)
-  ];
+  ]
 
   if (is(Function, actionCreator)) {
     yield put(actionCreator())
@@ -47,14 +55,14 @@ export function* set(path, params, payload, actionCreator) {
   return error
 }
 
-export function* update(path, params, payload, actionCreator) {
+export function* update (path, params, payload, actionCreator) {
   const opts = newOpts('error')
   const ref = DB[path](params)
 
   const [_, {error}] = yield [
     call([ref, ref.update], payload, opts.handler),
     take(opts)
-  ];
+  ]
 
   if (is(Function, actionCreator)) {
     yield put(actionCreator())
@@ -63,18 +71,17 @@ export function* update(path, params, payload, actionCreator) {
   return error
 }
 
-export function* remove(path, params) {
+export function* remove (path, params) {
   const opts = newOpts('error')
   const ref = DB[path](params)
 
-  const [ _, { error } ] = yield [
-    call([ref, ref.remove], opts.handler),
-    take(opts)
-  ];
-  return error;
+  const [_, {error}] = yield [call([ref, ref.remove], opts.handler), take(opts)]
+  return error
 }
 
-function* runSync(ref, eventType, actionCreator) {
+/* eslint-enable no-unused-vars */
+
+function* runSync (ref, eventType, actionCreator) {
   const opts = newOpts()
   yield call([ref, ref.on], eventType, opts.handler)
 
@@ -84,10 +91,8 @@ function* runSync(ref, eventType, actionCreator) {
   }
 }
 
-const getTimeNow = () => Math.round((new Date()).getTime() / 1000)
-
-export function* sync(path, mapEventToAction = {}, limit) {
-  //TODO: filter on ts to not load old items
+export function* sync (path, mapEventToAction = {}, limit) {
+  // TODO: filter on ts to not load old items
   const ref = typeof limit === 'number'
     ? DB[path]({}).limitToLast(limit)
     : DB[path]({})

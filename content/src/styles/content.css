@@ -6,6 +6,7 @@
   --lj-background: 	hsl(0, 0%, 96%);
   --lj-background-blue: hsl(231, 99%, 59%);
   --lj-button-blue: hsl(218, 100%, 58%);
+  --lj-button-active-orange: hsl(14, 99%, 56%);
 }
 
 
@@ -16,7 +17,6 @@
 .lj-title {
   display: inline-block;
   margin-left: 25px;
-  z-index: 10000;
 }
 
 .lj-button {
@@ -36,10 +36,16 @@
   transition: all .3s;
 }
 
+.lj-button.active {
+  background-color: var(--lj-button-active-orange)
+}
+
 .button-voting--text {
   position: absolute;
   bottom: 3px;
   right: 12px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .lj-votes > .voter {
@@ -50,3 +56,4 @@
 .voter > .logo-train {
   font-size: 20px;
 }
+

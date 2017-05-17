@@ -23,21 +23,21 @@ const createId = compose(
  */
 
 class ItemRenderer {
-  constructor(restaurant) {
+  constructor (restaurant) {
     this._container = document.getElementById(restaurant.id)
     this._id = restaurant.id
     this._name = restaurant.name
     this._path = restaurant.path
   }
-  render() {
+  render () {
     render(
       <Provider store={proxyStore}>
         <Title id={this._id} name={this._name} path={this._path} />
       </Provider>,
       this._container
-    );
+    )
   }
-  destroy() {
+  destroy () {
     unmountComponentAtNode(this._container)
   }
 }
@@ -45,10 +45,11 @@ class ItemRenderer {
 const init = () => {
   const h3s = document.querySelectorAll('h3')
   const rests = [...h3s].filter(rest => {
-    //make sure we don't replace a react instance with id and filter out any non
-    //restaurant title h3s
-    return !rest.hasAttribute('id') &&
-      rest.offsetParent.classList.contains('menu')
+    // make sure we don't replace a react instance with id and filter out any non
+    // restaurant title h3s
+    return (
+      !rest.hasAttribute('id') && rest.offsetParent.classList.contains('menu')
+    )
   })
   // copy over title text and href path to use in react version
   const restaurants = rests.map(title => {
@@ -76,8 +77,8 @@ const links = [...document.getElementsByTagName('a')]
 
 links.forEach(link => {
   link.onclick = function () {
-    //TODO: check that it is the base href or with a hash to reload, otherwise a link to another page
-    //we have to make sure somehow all the new dome elements are there
+    // TODO: check that it is the base href or with a hash to reload, otherwise a link to another page
+    // we have to make sure somehow all the new dome elements are there
     setTimeout(init, 1000)
   }
 })

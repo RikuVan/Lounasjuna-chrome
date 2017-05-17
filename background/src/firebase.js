@@ -13,12 +13,10 @@ export const getGoogleCredential = firebase.auth.GoogleAuthProvider.credential
 
 export const DB = {
   users: ({userId = ''}) => database.ref(`users${userId ? `/${userId}` : ''}`),
-  restaurants: ({restaurantId = ''}) => database.ref(
-      `restaurants/${restaurantId ? `${restaurantId}` : ''}`,
-    ),
+  restaurants: ({restaurantId = ''}) =>
+    database.ref(`restaurants/${restaurantId ? `${restaurantId}` : ''}`),
   votes: ({restaurantId, userId}) =>
     database.ref(
-      `restaurants/${restaurantId}/currentVotes${userId ? `/${userId}` : ''}`,
-    ),
+      `restaurants/${restaurantId}/currentVotes${userId ? `/${userId}` : ''}`
+    )
 }
-

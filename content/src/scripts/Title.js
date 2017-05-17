@@ -1,44 +1,57 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import actions, {vote} from '../../../shared/actions'
+import {vote, revokeVotes} from '../../../shared/actions'
 import {Button} from '../../../shared/components'
 import {getUid} from '../../../shared/selectors'
-import {compose, keys, pathOr, propOr, reduce, join} from 'Ramda'
+import {compose, keys, pathOr, propOr, reduce, join, contains} from 'Ramda'
+import setClasses from 'classnames'
 
 class Title extends Component {
   state = {showMessage: false}
 
-  handleVote = () => this.props.vote({
-    userId: this.props.userId,
-    restaurantId: this.props.id,
-    name: this.props.name}
-  )
+  handleVote = () =>
+    this.props.vote({
+      userId: this.props.userId,
+      restaurantId: this.props.id,
+      name: this.props.name
+    })
 
-  suggestLogin = () => this.setState({showMessage: true},
-    () => setTimeout(() => this.setState({showMessage: false}), 1000))
+  handleCancellation = () => this.props.revokeVotes(this.props.userId)
 
   render () {
-    const {userId: loggedIn, votes, path, name} = this.props
+    const {
+      userId: loggedIn,
+      voters,
+      path,
+      name,
+      selectedByCurrentUser
+    } = this.props
+
     return (
       <div className='title-container'>
-        <div className={loggedIn ? 'lj-title' : ''}>
+        <div className={setClasses({'lj-title': loggedIn})}>
           <a href={path}>{name}</a>
         </div>
-        {loggedIn && <Button
-          type='voting'
-          onClick={loggedIn ? this.handleVote : this.suggestLogin}
-        >
-          <span className="button-voting--text">{votes.length}</span>
-        </Button>}
-        <div className="lj-votes">
-          {!loggedIn && this.state.showMessage && <div>Sign in to vote</div>}
-          {loggedIn && votes.length > 0 &&
-            <small className="voter">
-              <span className="logo-train">🚂</span>
-              {' '}{join(', ', votes)}
-            </small>
-          }
+        {loggedIn &&
+          <Button
+            type='voting'
+            active={selectedByCurrentUser}
+            onClick={
+              selectedByCurrentUser ? this.handleCancellation : this.handleVote
+            }
+          >
+            <span className='button-voting--text'>
+              {voters.length > 0 ? voters.length : '+'}
+            </span>
+          </Button>}
+        <div className='lj-votes'>
+          {loggedIn &&
+            voters.length > 0 &&
+            <small className='voter'>
+              <span className='logo-train'>🚂</span>
+              {' '}{join(', ', voters)}
+            </small>}
         </div>
       </div>
     )
@@ -48,24 +61,39 @@ class Title extends Component {
 Title.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  vote: PropTypes.func.isRequired
+  vote: PropTypes.func.isRequired,
+  revokeVotes: PropTypes.func.isRequired,
+  voters: PropTypes.array,
+  selectedByCurrentUser: PropTypes.bool.isRequired,
+  userId: PropTypes.string.isRequired,
+  path: PropTypes.string
 }
 
-const getVotes = (state, ownProps) => {
-  const currentVoteIds = compose(
-    keys,
-    pathOr({}, ['restaurants', ownProps.id, 'currentVotes'])
-  )(state)
+const getCurrentVoteIds = id =>
+  compose(keys, pathOr({}, ['restaurants', id, 'currentVotes']))
+
+const getIsSelectedByCurrentUser = (state, ownProps) => {
+  const currentVoteIds = getCurrentVoteIds(ownProps.id)(state)
+  return contains(getUid(state), currentVoteIds)
+}
+
+const getVoters = (state, ownProps) => {
+  const currentVoteIds = getCurrentVoteIds(ownProps.id)(state)
   const users = propOr({}, 'users', state)
-  return reduce((votes, id) => {
-    const vote = pathOr(null, [id, 'displayName'], users)
-    return votes.concat(vote ? vote : [])
-  }, [], currentVoteIds)
+  return reduce(
+    (votes, id) => {
+      const vote = pathOr(null, [id, 'displayName'], users)
+      return votes.concat(vote || [])
+    },
+    [],
+    currentVoteIds
+  )
 }
 
 const mapStateToProps = (state, ownProps) => ({
   userId: getUid(state),
-  votes: getVotes(state, ownProps)
+  voters: getVoters(state, ownProps),
+  selectedByCurrentUser: getIsSelectedByCurrentUser(state, ownProps)
 })
 
-export default connect(mapStateToProps, {vote})(Title)
+export default connect(mapStateToProps, {vote, revokeVotes})(Title)

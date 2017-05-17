@@ -1,8 +1,11 @@
-import {eventChannel, takeEvery, channel} from 'redux-saga'
+import {eventChannel, takeEvery} from 'redux-saga'
 import {call, put, take, select, fork} from 'redux-saga/effects'
-import {auth, getGoogleCredential, signInWithCredential, SERVER_TIMESTAMP} from '../firebase'
+import {
+  auth,
+  getGoogleCredential,
+  SERVER_TIMESTAMP
+} from '../firebase'
 import actions from '../../../shared/actions'
-import {addUser} from './users'
 import {assoc, compose, has, prop} from 'Ramda'
 import {set} from './helpers'
 
@@ -15,15 +18,10 @@ const removeTokenFromCache = chrome.identity.removeCachedAuthToken
 
 export const signIn = user => ({type: actions.SIGN_IN, payload: user})
 export const signOut = () => ({type: actions.SIGN_OUT})
-export const attemptSignIn = () => ({type: actions.ATTEMPT_SIGN_IN})
-export const cancelGoogleAuth = () => ({type: actions.CANCEL_AUTH})
 
 // selectors
 
-const isAmongUsers = uid => compose(
-  has(uid),
-  prop('auth')
-)
+const isAmongUsers = uid => compose(has(uid), prop('auth'))
 
 // Sagas
 
@@ -47,11 +45,13 @@ export function* login (interactive) {
     if (chrome.runtime.lastError && !interactive) {
       console.log('It was not possible to get a token programmatically.')
     } else if (chrome.runtime.lastError) {
-      console.error("lastError", chrome.runtime.lastError)
+      console.error('lastError', chrome.runtime.lastError)
     } else if (token) {
-
       const credential = yield call(getGoogleCredential, null, token)
-      const {uid, displayName, photoURL} = yield call([auth, auth.signInWithCredential], credential)
+      const {uid, displayName, photoURL} = yield call(
+        [auth, auth.signInWithCredential],
+        credential
+      )
 
       if (uid) {
         const registered = yield select(isAmongUsers(uid))
@@ -66,7 +66,6 @@ export function* login (interactive) {
         }
 
         yield put(signIn({uid, displayName, photoURL}))
-
       } else {
         console.error('The OAuth Token was null')
       }
@@ -85,7 +84,7 @@ const subscribe = () =>
   eventChannel(emit => auth.onAuthStateChanged(user => emit(user || {})))
 
 function* watchAuthentication () {
-  const channel = yield call(subscribe)
+  const channel = yield call(subscribe)  // eslint-disable-line no-unused-vars
   // Keep on taking events from the eventChannel till infinity
   while (true) {
     const {uid, displayName, photoURL} = yield take(channel)
@@ -104,7 +103,7 @@ function* watchAuthentication () {
 
 export function* doCancelAuth () {
   try {
-    const user = yield call([auth, auth.signOut])
+    yield call([auth, auth.signOut])
 
     yield put(signOut())
   } catch (error) {
