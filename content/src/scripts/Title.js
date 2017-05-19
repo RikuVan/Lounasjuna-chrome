@@ -10,12 +10,16 @@ import setClasses from 'classnames'
 class Title extends Component {
   state = {showMessage: false}
 
-  handleVote = () =>
-    this.props.vote({
+  handleVote = async () => {
+    await this.props.vote({
       userId: this.props.userId,
       restaurantId: this.props.id,
       name: this.props.name
     })
+    // we need to repaint in order to restablish padding between
+    // the cards in the jQuery isotope layout
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 100)
+  }
 
   handleCancellation = () => this.props.revokeVotes(this.props.userId)
 
@@ -29,10 +33,7 @@ class Title extends Component {
     } = this.props
 
     return (
-      <div className='title-container'>
-        <div className={setClasses({'lj-title': loggedIn})}>
-          <a href={path}>{name}</a>
-        </div>
+      <div className='lj-container'>
         {loggedIn &&
           <Button
             type='voting'
@@ -65,7 +66,7 @@ Title.propTypes = {
   revokeVotes: PropTypes.func.isRequired,
   voters: PropTypes.array,
   selectedByCurrentUser: PropTypes.bool.isRequired,
-  userId: PropTypes.string.isRequired,
+  userId: PropTypes.string,
   path: PropTypes.string
 }
 

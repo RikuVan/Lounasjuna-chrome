@@ -23,3 +23,15 @@ sagaMiddleware.run(rootSaga)
 
 store.dispatch(fetchUsers())
 store.dispatch(fetchRestaurants())
+
+//message from content page when loaded to activate popup
+chrome.runtime.onMessage.addListener(request => {
+  if (request.action === 'SHOW_POPUP') {
+    console.log(request.action)
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+      chrome.pageAction.show(tabs[0].id)
+    })
+  }
+})
+
+

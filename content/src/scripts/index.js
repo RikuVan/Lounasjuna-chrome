@@ -18,21 +18,23 @@ const createId = compose(
   toLower
 )
 
+const D = document
+
 /**
  * replaces h3 title for restaurant card with react version
  */
 
 class ItemRenderer {
   constructor (restaurant) {
-    this._container = document.getElementById(restaurant.id)
+    this._container = D.getElementById(restaurant.id)
     this._id = restaurant.id
     this._name = restaurant.name
-    this._path = restaurant.path
   }
   render () {
+    console.log(this._container)
     render(
       <Provider store={proxyStore}>
-        <Title id={this._id} name={this._name} path={this._path} />
+        <Title id={this._id} name={this._name} />
       </Provider>,
       this._container
     )
@@ -43,6 +45,31 @@ class ItemRenderer {
 }
 
 const init = () => {
+  chrome.runtime.sendMessage({action: 'SHOW_POPUP'})
+
+  const panels = [...D.querySelectorAll('div.menu.item')]
+
+  const newPanels = panels.filter(panel => {
+    //or better to just check if child ul hasAttribute('id')?
+    const restaurantId = createId(panel.querySelector('h3').innerText)
+    return !D.getElementById(restaurantId)
+  })
+  console.log(newPanels)
+  //TODO: new version
+  const items = newPanels.map(panel => {
+    const list = panel.querySelector('.item-body > ul')
+    const name = panel.querySelector('h3').innerText
+    const id = createId(name)
+    const listItem = D.createElement('li')
+    listItem.classList.add('menu-item')
+    listItem.setAttribute('id', id)
+    list.insertBefore(listItem, list.childNodes[0])
+    return {id, name}
+  })
+
+  items.forEach(panel => new ItemRenderer(panel).render())
+
+  /*
   const h3s = document.querySelectorAll('h3')
   const rests = [...h3s].filter(rest => {
     // make sure we don't replace a react instance with id and filter out any non
@@ -50,9 +77,10 @@ const init = () => {
     return (
       !rest.hasAttribute('id') && rest.offsetParent.classList.contains('menu')
     )
-  })
+  })*/
+
   // copy over title text and href path to use in react version
-  const restaurants = rests.map(title => {
+  /*const restaurants = rests.map(title => {
     let anchorEl
     const childEl = title.childNodes[0]
     if (childEl.nodeName === 'A') {
@@ -66,7 +94,9 @@ const init = () => {
     return {id, name, path}
   })
   rests.forEach(title => title.setAttribute('id', createId(title.innerText)))
-  restaurants.forEach(rest => new ItemRenderer(rest).render())
+  restaurants.forEach(rest => new ItemRenderer(rest).render())*/
+  //adjust isotope layout for larger cards
+  setTimeout(() => window.dispatchEvent(new Event('resize')), 30)
 }
 
 init()

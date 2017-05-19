@@ -16,7 +16,3 @@ render(
   </Provider>,
   document.getElementById('app')
 )
-
-chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-  console.log('here', tabs[0].id)
-})
