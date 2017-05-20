@@ -5,11 +5,9 @@ import {vote, revokeVotes} from '../../../shared/actions'
 import {Button} from '../../../shared/components'
 import {getUid} from '../../../shared/selectors'
 import {compose, keys, pathOr, propOr, reduce, join, contains} from 'Ramda'
-import setClasses from 'classnames'
+import DatePicker from './components/TimePicker'
 
-class Title extends Component {
-  state = {showMessage: false}
-
+class Restaurant extends Component {
   handleVote = async () => {
     await this.props.vote({
       userId: this.props.userId,
@@ -27,8 +25,8 @@ class Title extends Component {
     const {
       userId: loggedIn,
       voters,
-      path,
       name,
+      hours,
       selectedByCurrentUser
     } = this.props
 
@@ -46,6 +44,11 @@ class Title extends Component {
               {voters.length > 0 ? voters.length : '+'}
             </span>
           </Button>}
+        <DatePicker
+          hours={this.props.hours}
+          userId={this.props.userId}
+          disabled={selectedByCurrentUser}
+        />
         <div className='lj-votes'>
           {loggedIn &&
             voters.length > 0 &&
@@ -59,7 +62,7 @@ class Title extends Component {
   }
 }
 
-Title.propTypes = {
+Restaurant.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   vote: PropTypes.func.isRequired,
@@ -67,7 +70,7 @@ Title.propTypes = {
   voters: PropTypes.array,
   selectedByCurrentUser: PropTypes.bool.isRequired,
   userId: PropTypes.string,
-  path: PropTypes.string
+  hours: PropTypes.object.isRequired
 }
 
 const getCurrentVoteIds = id =>
@@ -97,4 +100,4 @@ const mapStateToProps = (state, ownProps) => ({
   selectedByCurrentUser: getIsSelectedByCurrentUser(state, ownProps)
 })
 
-export default connect(mapStateToProps, {vote, revokeVotes})(Title)
+export default connect(mapStateToProps, {vote, revokeVotes})(Restaurant)

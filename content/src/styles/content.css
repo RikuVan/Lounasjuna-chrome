@@ -47,3 +47,9 @@
   font-size: 20px;
 }
 
+/* Overrides */
+.Select-menu {
+  max-height: 9em !important;
+  z-index: 9999999;
+}
+

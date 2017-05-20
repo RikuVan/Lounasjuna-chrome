@@ -40,4 +40,3 @@ export const revokeVotes = userId => ({
 // auth
 export const attemptSignIn = () => ({type: actions.ATTEMPT_SIGN_IN})
 export const cancelGoogleAuth = () => ({type: actions.CANCEL_AUTH})
-

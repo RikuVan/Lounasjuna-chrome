@@ -2,9 +2,20 @@ import React from 'react'
 import {render, unmountComponentAtNode} from 'react-dom'
 import {Provider} from 'react-redux'
 import {Store} from 'react-chrome-redux'
-import {replace, toLower, compose} from 'Ramda'
+import {
+  map,
+  trim,
+  replace,
+  toLower,
+  compose,
+  split,
+  not,
+  equals,
+  zipObj,
+  evolve
+} from 'Ramda'
 
-import Title from './Title'
+import Restaurant from './Restaurant'
 
 const proxyStore = new Store({portName: 'lounasjuna'})
 
@@ -29,12 +40,13 @@ class ItemRenderer {
     this._container = D.getElementById(restaurant.id)
     this._id = restaurant.id
     this._name = restaurant.name
+    this._hours = restaurant.hours
   }
   render () {
     console.log(this._container)
     render(
       <Provider store={proxyStore}>
-        <Title id={this._id} name={this._name} />
+        <Restaurant id={this._id} name={this._name} hours={this._hours} />
       </Provider>,
       this._container
     )
@@ -44,27 +56,42 @@ class ItemRenderer {
   }
 }
 
+const getLunch = panel => panel.querySelector('p.lunch').innerText
+const getHasLunch = compose(not, equals('ei lounasta'), getLunch)
+const normalize = time => (time.length <= 2 ? `${time}:00` : time)
+const getLunchHours = compose(
+  evolve({
+    start: normalize,
+    end: normalize
+  }),
+  zipObj(['start', 'end']),
+  map(trim),
+  split('-'),
+  getLunch
+)
+
 const init = () => {
   chrome.runtime.sendMessage({action: 'SHOW_POPUP'})
 
   const panels = [...D.querySelectorAll('div.menu.item')]
 
   const newPanels = panels.filter(panel => {
-    //or better to just check if child ul hasAttribute('id')?
+    // or better to just check if child ul hasAttribute('id')?
     const restaurantId = createId(panel.querySelector('h3').innerText)
-    return !D.getElementById(restaurantId)
+    const hasLunch = getHasLunch(panel)
+    return !D.getElementById(restaurantId) && hasLunch
   })
-  console.log(newPanels)
-  //TODO: new version
+
   const items = newPanels.map(panel => {
     const list = panel.querySelector('.item-body > ul')
     const name = panel.querySelector('h3').innerText
     const id = createId(name)
     const listItem = D.createElement('li')
+    const hours = getLunchHours(panel)
     listItem.classList.add('menu-item')
     listItem.setAttribute('id', id)
     list.insertBefore(listItem, list.childNodes[0])
-    return {id, name}
+    return {id, name, hours}
   })
 
   items.forEach(panel => new ItemRenderer(panel).render())
@@ -77,10 +104,10 @@ const init = () => {
     return (
       !rest.hasAttribute('id') && rest.offsetParent.classList.contains('menu')
     )
-  })*/
+  }) */
 
   // copy over title text and href path to use in react version
-  /*const restaurants = rests.map(title => {
+  /* const restaurants = rests.map(title => {
     let anchorEl
     const childEl = title.childNodes[0]
     if (childEl.nodeName === 'A') {
@@ -94,8 +121,8 @@ const init = () => {
     return {id, name, path}
   })
   rests.forEach(title => title.setAttribute('id', createId(title.innerText)))
-  restaurants.forEach(rest => new ItemRenderer(rest).render())*/
-  //adjust isotope layout for larger cards
+  restaurants.forEach(rest => new ItemRenderer(rest).render()) */
+  // adjust isotope layout for larger cards
   setTimeout(() => window.dispatchEvent(new Event('resize')), 30)
 }
 

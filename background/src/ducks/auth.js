@@ -1,10 +1,6 @@
 import {eventChannel, takeEvery} from 'redux-saga'
 import {call, put, take, select, fork} from 'redux-saga/effects'
-import {
-  auth,
-  getGoogleCredential,
-  SERVER_TIMESTAMP
-} from '../firebase'
+import {auth, getGoogleCredential, SERVER_TIMESTAMP} from '../firebase'
 import actions from '../../../shared/actions'
 import {assoc, compose, has, prop} from 'Ramda'
 import {set} from './helpers'
@@ -84,7 +80,7 @@ const subscribe = () =>
   eventChannel(emit => auth.onAuthStateChanged(user => emit(user || {})))
 
 function* watchAuthentication () {
-  const channel = yield call(subscribe)  // eslint-disable-line no-unused-vars
+  const channel = yield call(subscribe) // eslint-disable-line no-unused-vars
   // Keep on taking events from the eventChannel till infinity
   while (true) {
     const {uid, displayName, photoURL} = yield take(channel)

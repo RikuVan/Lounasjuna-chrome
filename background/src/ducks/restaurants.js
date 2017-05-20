@@ -65,7 +65,6 @@ export function* vote ({payload}) {
         {
           id: restaurantId,
           name,
-          totalVote: 0,
           insertedAt: SERVER_TIMESTAMP,
           currentVotes: {[userId]: SERVER_TIMESTAMP}
         }
