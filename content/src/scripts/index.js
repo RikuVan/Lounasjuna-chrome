@@ -14,36 +14,25 @@ import {
   zipObj,
   evolve
 } from 'Ramda'
-
 import Restaurant from './Restaurant'
-
-const proxyStore = new Store({portName: 'lounasjuna'})
-
-const createId = compose(
-  replace(/[^0-9a-z&-]/gi, ''),
-  replace(/é/gi, 'e'),
-  replace(/å/, 'a'),
-  replace(/ö/gi, 'o'),
-  replace(/ä/gi, 'a'),
-  replace(/\s+|_/g, '-'),
-  toLower
-)
 
 const D = document
 
+const proxyStore = new Store({portName: 'lounasjuna'})
+
 /**
- * replaces h3 title for restaurant card with react version
+ * creates react app for each restaurant panel
  */
 
-class ItemRenderer {
+class LounasjunaRenderer {
   constructor (restaurant) {
+    console.log(restaurant.hours)
     this._container = D.getElementById(restaurant.id)
     this._id = restaurant.id
     this._name = restaurant.name
     this._hours = restaurant.hours
   }
   render () {
-    console.log(this._container)
     render(
       <Provider store={proxyStore}>
         <Restaurant id={this._id} name={this._name} hours={this._hours} />
@@ -56,9 +45,21 @@ class ItemRenderer {
   }
 }
 
+const createId = compose(
+  replace(/[^0-9a-z&-]/gi, ''),
+  replace(/é/gi, 'e'),
+  replace(/å/, 'a'),
+  replace(/ö/gi, 'o'),
+  replace(/ä/gi, 'a'),
+  replace(/\s+|_/g, '-'),
+  toLower
+)
+
 const getLunch = panel => panel.querySelector('p.lunch').innerText
 const getHasLunch = compose(not, equals('ei lounasta'), getLunch)
 const normalize = time => (time.length <= 2 ? `${time}:00` : time)
+
+// these are used to create the time picker options for selecting a lunch place and time
 const getLunchHours = compose(
   evolve({
     start: normalize,
@@ -71,10 +72,12 @@ const getLunchHours = compose(
 )
 
 const init = () => {
+  // tell background to relay message to popup to activate
   chrome.runtime.sendMessage({action: 'SHOW_POPUP'})
 
   const panels = [...D.querySelectorAll('div.menu.item')]
 
+  // filter out restaurant panels which already have a lounasjuna or don't offer lunch
   const newPanels = panels.filter(panel => {
     // or better to just check if child ul hasAttribute('id')?
     const restaurantId = createId(panel.querySelector('h3').innerText)
@@ -82,47 +85,24 @@ const init = () => {
     return !D.getElementById(restaurantId) && hasLunch
   })
 
+  // lounasjuna app is inserted above the menu lis
+  // the parent li is given a unique id formed from the restaurant name
   const items = newPanels.map(panel => {
     const list = panel.querySelector('.item-body > ul')
     const name = panel.querySelector('h3').innerText
     const id = createId(name)
     const listItem = D.createElement('li')
     const hours = getLunchHours(panel)
-    listItem.classList.add('menu-item')
+    listItem.classList.add('menu-item', 'lj-voting')
     listItem.setAttribute('id', id)
     list.insertBefore(listItem, list.childNodes[0])
     return {id, name, hours}
   })
 
-  items.forEach(panel => new ItemRenderer(panel).render())
+  // create an react app for each restaurant panel
+  items.forEach(panel => new LounasjunaRenderer(panel).render())
 
-  /*
-  const h3s = document.querySelectorAll('h3')
-  const rests = [...h3s].filter(rest => {
-    // make sure we don't replace a react instance with id and filter out any non
-    // restaurant title h3s
-    return (
-      !rest.hasAttribute('id') && rest.offsetParent.classList.contains('menu')
-    )
-  }) */
-
-  // copy over title text and href path to use in react version
-  /* const restaurants = rests.map(title => {
-    let anchorEl
-    const childEl = title.childNodes[0]
-    if (childEl.nodeName === 'A') {
-      anchorEl = childEl
-    } else {
-      anchorEl = title.childNodes[0].getElementsByTagName('a')[0]
-    }
-    const path = anchorEl.getAttribute('href')
-    const id = createId(anchorEl.innerText)
-    const name = anchorEl.innerText
-    return {id, name, path}
-  })
-  rests.forEach(title => title.setAttribute('id', createId(title.innerText)))
-  restaurants.forEach(rest => new ItemRenderer(rest).render()) */
-  // adjust isotope layout for larger cards
+  // the masonry layout needs to be adjusted after inserting the the react components
   setTimeout(() => window.dispatchEvent(new Event('resize')), 30)
 }
 

@@ -55,4 +55,6 @@ const mapStateToProps = state => ({
   loading: isAuthorizingUser(state)
 })
 
-export default connect(mapStateToProps, {attemptSignIn, cancelGoogleAuth})(Popup)
+export default connect(mapStateToProps, {attemptSignIn, cancelGoogleAuth})(
+  Popup
+)

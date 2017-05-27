@@ -108,6 +108,10 @@ const config = {
       {
         test: /\.css$/,
         use: getCSSRule()
+      },
+      {
+        test: /\.less$/,
+        use:  ['style-loader', 'css-loader', 'less-loader']
       }
     ]
   },

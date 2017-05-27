@@ -6,24 +6,35 @@
   --lj-background: 	hsl(0, 0%, 96%);
   --lj-background-blue: hsl(231, 99%, 59%);
   --lj-button-blue: hsl(218, 100%, 58%);
+  --lj-button-blue-hover: hsl(218, 100%, 48%);
   --lj-button-active-orange: hsl(14, 99%, 56%);
+  --lj-button-active-orange-hover: hsl(14, 99%, 46%);
+  --lj-button-text-white: #fff;
 }
-
 
 /**
   Title component styles
  */
 
 .lj-button {
-  width: 36px;
-  height: 46px;
+  flex-basis: 80%;
+  padding: 0 20px;
+  margin: 0 0 0 5px;
   border: 0;
   outline: 0;
   background: var(--lj-button-blue);
-  font-size: 16px;
-  color: white;
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   transition: all .3s;
+}
+
+button.lj-button:hover {
+  text-decoration: none;
+  background: var(--lj-button-blue-hover);
+}
+
+button.lj-button.active:hover {
+  text-decoration: none;
+  background: var(--lj-button-active-orange-hover);
 }
 
 .lj-button.active {
@@ -31,11 +42,9 @@
 }
 
 .button-voting--text {
-  position: absolute;
-  bottom: 3px;
-  right: 12px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
+  color: var(--lj-button-text-white)
 }
 
 .lj-votes > .voter {
@@ -47,9 +56,82 @@
   font-size: 20px;
 }
 
-/* Overrides */
-.Select-menu {
-  max-height: 9em !important;
-  z-index: 9999999;
+.lj-voting {
+  background-color: var(--lj-background)
 }
+
+.date-picker-and-button {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+.lj-timeinputs {
+  display: flex;
+}
+
+.lj-time-display {
+  display: flex;
+  margin: 0 2em;
+  align-items: center;
+  width: 100%;
+  font-size: 1.4em;
+  background-color: var(--lj-button-text-white);
+  align-content: center;
+}
+
+.hour-minute-separator {
+  line-height: 2.5;
+  font-weight: bold;
+}
+
+/* rc-number-input Overrides */
+
+.rc-input-number {
+  border-radius: 0 !important;
+  height: 36px !important;
+  border: 0 !important;
+  outline: 0;
+  background-color: var(--lj-button-text-white);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  transition: all .3s;
+}
+
+.rc-input-number-input {
+  height: 38px !important;
+}
+
+.rc-input-number-handler-wrap {
+  background-color: var(--lj-button-blue);
+  color: white;
+  height: 36px !important;
+  width: 24px !important;
+}
+
+.rc-input-number-handler {
+  height: 18px !important;
+  line-height: 16px !important;
+  border: 0 !important;
+}
+
+.rc-input-number-handler-wrap {
+  border: 0 !important;
+}
+
+.rc-input-number-handler-up-inner:after,
+.rc-input-number-handler-down-inner:after {
+  color: white;
+  font-weight: bold;
+}
+
+.rc-input-number:first-of-type > .rc-input-number-handler-wrap {
+  float: left;
+}
+
+.rc-input-number-handler-down-disabled, .rc-input-number-handler-up-disabled {
+  opacity: 0.5 !important;
+}
+
+
+
 

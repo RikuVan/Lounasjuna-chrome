@@ -1,59 +1,90 @@
-import React, {Component} from 'react'
-import Select from 'react-select'
-import 'react-select/dist/react-select.css'
-import moment from 'moment'
-import {compose, split, prop, head, tail, isNil} from 'Ramda'
-import propTypes from 'prop-types'
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import NumberPicker from './NumberPicker';
+import {compose, split, prop, head, tail} from 'Ramda';
+import setClass from 'classnames';
 
-const splitAtColonFor = key => compose(split(':'), prop(key))
-const getHour = key => compose(head, splitAtColonFor(key))
-const getMinutes = key => compose(tail, splitAtColonFor(key))
+const splitAtColon = key => compose(split(':'), prop(key));
+const getHour = key => compose(Number, head, splitAtColon(key));
+const getMinutes = key => compose(Number, tail, splitAtColon(key));
 
-const generateOptions = data => {
-  const startHour = getHour('start')(data)
-  const startMinutes = getMinutes('start')(data)
-  const endHour = getHour('end')(data)
-  const endMinutes = getMinutes('end')(data)
-  const start = moment().hours(startHour).minutes(startMinutes)
-  const end = moment().hours(endHour).minutes(endMinutes)
-  let options = [
-    {value: moment().hours(0).minutes(0), label: 'Any time'},
-    {value: start.unix(), label: start.format('h:mm')}
-  ]
-  let nextTime = start
-  do {
-    nextTime.add(15, 'm')
-    options.push({value: nextTime.unix(), label: nextTime.format('h:mm')})
-  } while (nextTime.unix() < end.unix())
-  return options
-}
-
-const getInitialState = () => ({value: null, label: 'Valitse aika...'})
+const Space = () => <div style={{width: '3px', display: 'flex'}}></div>;
 
 class TimePicker extends Component {
-  state = getInitialState()
+  state = {
+    hour: getHour('start')(this.props.hours),
+    minutes: getMinutes('start')(this.props.hours),
+    time: this.props.hours.start,
+  };
 
-  onChange = option => {
-    this.setState(() => (isNil(option) ? getInitialState() : option))
+  componentDidMount() {
+    this.props.onChange(this.props.id, this.state.time)
   }
 
-  render () {
-    const {hours, disabled} = this.props
-    const options = generateOptions(hours)
-    return (
-      <Select
-        value={this.state}
-        onChange={this.onChange}
-        options={options}
-        disabled={disabled}
-      />
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.time !== this.state.time) {
+      this.props.onChange(this.props.id, this.state.time)
+    }
+  }
+
+  setTime = () => {
+    this.setState(
+      state => {
+        const minutes = state.minutes.toString().length === 2
+          ? state.minutes
+          : `0${state.minutes}`;
+        return `${state.hour}:${minutes}`
+      },
+      () => this.props.onChange(this.props.id, this.state.time)
     )
+  }
+
+  handleChange = type =>
+    number => this.setState(state => ({[type]: number}), this.setTime)
+
+  render() {
+    const {disabled, selected} = this.props;
+
+    //const options = generateOptions(hours)
+    return (
+      <div className="lj-timepicker">
+        {selected
+          ? <div className="lj-time-display">
+              {this.state.time}
+            </div>
+          : <div className="lj-timeinputs">
+              <NumberPicker
+                type={'hour'}
+                onChange={this.handleChange}
+                value={this.state.hour}
+                min={getHour('start')(this.props.hours)}
+                max={getHour('end')(this.props.hours)}
+                disabled={disabled}
+              />
+              <Space />
+              <span className="hour-minute-separator">:</span>
+              <Space />
+              <NumberPicker
+                type={'minutes'}
+                onChange={this.handleChange}
+                value={this.state.minutes}
+                min={0}
+                max={60}
+                step={15}
+                formatter={value =>
+                  value && value.length === 1 ? `0${value}` : value}
+                disabled={disabled}
+              />
+            </div>
+          }
+      </div>
+    );
   }
 }
 
 TimePicker.propTypes = {
   hours: PropTypes.object.isRequired,
-  disabled: PropTypes.bool.isRequired
-}
+  disabled: PropTypes.bool.isRequired,
+};
 
 export default TimePicker

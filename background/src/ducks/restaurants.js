@@ -12,7 +12,18 @@ import {
   update,
   remove
 } from './helpers'
-import {reduce, keys, compose, has, prop, propOr, assoc, dissoc} from 'Ramda'
+import {
+  reduce,
+  keys,
+  compose,
+  has,
+  prop,
+  propOr,
+  assoc,
+  assocPath,
+  dissoc,
+  merge
+} from 'Ramda'
 
 // action creators
 
@@ -54,7 +65,7 @@ function* syncRestaurants () {
 
 export function* vote ({payload}) {
   try {
-    const {userId, restaurantId, name} = payload
+    const {userId, restaurantId, name, timestamp} = payload
     yield put(revokeVotes(userId))
     const inDb = yield select(isRegisteredRestaurant(restaurantId))
     if (!inDb) {
@@ -66,11 +77,11 @@ export function* vote ({payload}) {
           id: restaurantId,
           name,
           insertedAt: SERVER_TIMESTAMP,
-          currentVotes: {[userId]: SERVER_TIMESTAMP}
+          currentVotes: {[userId]: timestamp}
         }
       )
     } else {
-      yield call(update, 'votes', {restaurantId}, {[userId]: SERVER_TIMESTAMP})
+      yield call(update, 'votes', {restaurantId}, {[userId]: timestamp})
     }
   } catch (error) {
     console.log('Error voting: ', error)
@@ -117,17 +128,21 @@ export const sagas = [
   watchRevocations()
 ]
 
+const assocMerge = (id, newObj, state) => {
+  const updated = merge(propOr({}, id, state), newObj)
+  return assoc(id, newObj, state)
+}
+
 export default (restaurants = {}, action) => {
   switch (action.type) {
     case actions.SET_RESTAURANTS:
-      return {
-        ...restaurants,
-        ...action.payload.restaurants
-      }
+      return merge(restaurants, action.payload.restaurants)
     case actions.UPDATE_RESTAURANT:
-      return assoc(action.payload.id, action.payload, restaurants)
+      return assocMerge(action.payload.id, action.payload, restaurants)
     case actions.REMOVE_RESTAURANT:
       return dissoc(action.payload.id, restaurants)
+    case actions.SET_LUNCH_TIME:
+      return assocPath([action.payload.id, 'time'], action.payload.time, restaurants)
     default:
       return restaurants
   }
