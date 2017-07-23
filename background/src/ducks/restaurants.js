@@ -130,7 +130,7 @@ export const sagas = [
 
 const assocMerge = (id, newObj, state) => {
   const updated = merge(propOr({}, id, state), newObj)
-  return assoc(id, newObj, state)
+  return assoc(id, updated, state)
 }
 
 export default (restaurants = {}, action) => {
@@ -142,7 +142,11 @@ export default (restaurants = {}, action) => {
     case actions.REMOVE_RESTAURANT:
       return dissoc(action.payload.id, restaurants)
     case actions.SET_LUNCH_TIME:
-      return assocPath([action.payload.id, 'time'], action.payload.time, restaurants)
+      return assocPath(
+        [action.payload.id, 'time'],
+        action.payload.time,
+        restaurants
+      )
     default:
       return restaurants
   }

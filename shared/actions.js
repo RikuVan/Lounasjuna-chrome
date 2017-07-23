@@ -38,8 +38,10 @@ export const revokeVotes = userId => ({
   type: actions.REVOKE_VOTES,
   payload: {userId}
 })
-export const setLunchTime = (id, time) =>
-  ({type: actions.SET_LUNCH_TIME, payload: {id, time}})
+export const setLunchTime = (id, time) => ({
+  type: actions.SET_LUNCH_TIME,
+  payload: {id, time}
+})
 
 // auth
 export const attemptSignIn = () => ({type: actions.ATTEMPT_SIGN_IN})

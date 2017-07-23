@@ -122,7 +122,6 @@ export const initialAuthState = {
 }
 
 export default (user = initialAuthState, action) => {
-  console.log(action)
   switch (action.type) {
     case actions.ATTEMPT_SIGN_IN:
       return assoc('loading', true, user)

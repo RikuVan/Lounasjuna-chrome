@@ -5,7 +5,7 @@ import moment from 'moment'
 const formatTime = timestamp => moment(timestamp * 1000).format('H:mm')
 
 const Time = ({timestamp}) => (
-  <span className="lj-time">
+  <span className='lj-time'>
     {timestamp === '?' ? timestamp : formatTime(timestamp)}
   </span>
 )

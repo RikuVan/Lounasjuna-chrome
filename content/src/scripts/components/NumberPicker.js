@@ -3,16 +3,12 @@ import PropTypes from 'prop-types'
 import NumberInput from 'rc-input-number'
 import 'rc-input-number/assets/index.less'
 
-const NumberPicker = ({
-  onChange,
-  value,
-  type,
-  ...rest
-}) => (
+const NumberPicker = ({onChange, value, type, ...rest}) => (
   <NumberInput
     onChange={onChange(type)}
     value={value}
     {...rest}
+    prefixCls='lj-input-number'
   />
 )
 
